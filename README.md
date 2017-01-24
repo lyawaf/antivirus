@@ -1,4 +1,5 @@
-*** Simple calling convention determiner
+Simple calling convention determiner
+------------------------------------------
 
 Usage: ./`parser or whatever` `addresses` `binary name`
 
