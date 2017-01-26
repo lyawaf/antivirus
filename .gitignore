@@ -1,0 +1,4 @@
+#doubt someone needs tags file
+.tags
+.*.swp
+*.o
