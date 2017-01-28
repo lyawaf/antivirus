@@ -11,9 +11,9 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 
 	//opening disassembler
 	if (mode == 32)
-		cs_open(CS_ARCH_X86, CS_MODE_64, &_handle);
-	else if (mode == 64)
 		cs_open(CS_ARCH_X86, CS_MODE_32, &_handle);
+	else if (mode == 64)
+		cs_open(CS_ARCH_X86, CS_MODE_64, &_handle);
 	else
 		throw runtime_error("Unrecognized mode");
 		

@@ -4,11 +4,7 @@
 #include <fstream>
 using namespace std;
 
-extern "C"
-{
-	#include <capstone/capstone.h>
-}
-
+#include <capstone/capstone.h>
 
 class OneStepDisasm
 {
