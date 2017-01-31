@@ -25,14 +25,14 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 	_codesize = _codefile.tellg() - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
-	_codeBegin.reset( new uint8_t[_codesize], charDeleter );
+	_codeBegin.reset( new uint8_t[_codesize], uint8Deleter );
 	_codeCurrent = _codeBegin.get();
 
 	//positioning at offset startaddr
 	_codefile.seekg(startaddr, ios::beg);
 	//and reading the file to memory
 	//via a bit of casts, because read() expects a *char and capstone expects uint8_t
-	auto codeBeginChar = reinterpret_cast<char*>(_codeCurrent);
+	auto codeBeginChar = const_cast<char*>(reinterpret_cast<const char*>(_codeCurrent));
 	_codefile.read(codeBeginChar, _codesize);
 	_codefile.close();
 }
@@ -40,7 +40,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 
 OneStepDisasm::OneStepDisasm(OneStepDisasm& r)
 : _filename(r._filename)
-, _codefile(r._codefile)
+, _codefile(r._filename, ios::in|ios::binary|ios::ate)
 , _codeBegin(r._codeBegin)
 {
 	if (!_codefile.is_open())
@@ -55,6 +55,9 @@ OneStepDisasm::OneStepDisasm(OneStepDisasm& r)
 		cs_open(CS_ARCH_X86, CS_MODE_64, &_handle);
 	else
 		throw runtime_error("Unrecognized mode");
+	
+	//positioning at offset startaddr
+	_codefile.seekg(_startaddr, ios::beg);
 		
 	//allocating memory cache
 	_insn = cs_malloc(_handle);

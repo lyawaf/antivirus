@@ -2,12 +2,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <memory>
 using namespace std;
 
 #include <capstone/capstone.h>
 
 //deleter used for arrays of text
-auto charDeleter = [](char* pointer) -> void { delete[] pointer; };
+auto uint8Deleter = [](uint8_t* pointer) -> void { delete[] pointer; };
 
 
 class OneStepDisasm
