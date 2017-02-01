@@ -7,6 +7,7 @@ FunctionKeyword = "//@@FUNCTION\n"
 IncludeKeyword = "//@@INCLUSIONS\n"
 ArrayKeyword = "//@@ARRAY\n"
 EndKeyword = "//@@END\n"
+SizeKeyword = "//@@SIZE\n"
 IgnoreFiles = ["functions.h", "includefunctions"]
 
 def yank_fnname text
@@ -96,7 +97,7 @@ if __FILE__ == $0
 		#skip till the end of inclusions in source file
 		while lines[i] != EndKeyword
 			if i == lines.length
-				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ IncludeKeyword.strip, EndKeyword.strip ]
+				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, IncludeKeyword.strip ]
 			end
 
 			#skippity skip
@@ -120,15 +121,43 @@ if __FILE__ == $0
 
 		#now put down all the lambdas, but the last one is treated specifically as it doesn't have a ,
 		fnnames[0...-1].each do |name|
-			destination.write "[&] (OneStepDisasm d) -> CCTypes { return %s(d); },\n" % name
+			destination.write "%s,\n" % name
 		end
 		#and the last one:
-		destination.write "[&] (OneStepDisasm d) -> CCTypes { return %s(d); }\n" % name
+		destination.write "%s\n" % name
 		
 		#skip till the end of array in source file
 		while lines[i] != EndKeyword
 			if i == lines.length
-				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ ArrayKeyword.strip, EndKeyword.strip ]
+				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, ArrayKeyword.strip ]
+			end
+
+			#skippity skip
+			i += 1
+		end
+		#write down keywordEnd too, it's nessesary
+		destination.write EndKeyword; i += 1 #as it was not accounted and we don't want to put it down twice
+
+
+		#write the lines of source text to the new text until we meet the third keyword
+		while lines[i] != SizeKeyword
+			if i == lines.length
+				abort "FATAL: incorrect functions.h structure: can't find %s after %s" % [ SizeKeyword.strip, ArrayKeyword.strip ]  
+			end
+			
+			destination.write lines[i]
+			i += 1
+		end
+		#also write the end keyword, it's necessary for future
+		destination.write SizeKeyword
+
+		#now write down the size of the array
+		destination.write "const size_t heuristicFunctionsSize = %d;" % fnnames.length
+
+		#skip till the end of size determinition in source file
+		while lines[i] != EndKeyword
+			if i == lines.length
+				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, ArrayKeyword.strip ]
 			end
 
 			#skippity skip

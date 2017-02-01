@@ -23,10 +23,16 @@ enum CCTypes
 //following lines define an array of lambdas that call heuristic functions
 //They are inserted automatically with ./includefunctions script
 
-auto heuristicFunctions[] =
+CCTypes (*heuristicFunctions[]) (OneStepDisasm) =
 {
 //@@ARRAY
 //@@END
 };
+
+//also as this is pretty much C stuff, it needs a variable to store the size of the array
+
+//@@SIZE
+const size_t heuristicFunctionsSize = 0;
+//@@END
 
 CCTypes determine(OneStepDisasm disasmer);
