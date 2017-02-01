@@ -6,7 +6,7 @@
 FunctionKeyword = "//@@FUNCTION\n"
 IncludeKeyword = "//@@INCLUSIONS\n"
 ArrayKeyword = "//@@ARRAY\n"
-EndKeyword = "//@@END"
+EndKeyword = "//@@END\n"
 IgnoreFiles = ["functions.h", "includefunctions"]
 
 def yank_fnname text
@@ -145,4 +145,7 @@ if __FILE__ == $0
 		end
 	end
 
+	#cleaning up, because after the above we have two files, with one too old and another with a wrong name
+	File.delete "functions.h"
+	File.rename ".functions.swap", "functions.h"
 end
