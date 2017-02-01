@@ -1,3 +1,4 @@
+#include "../wrapper.h"
 //This file includes all heuristics functions,
 //embraces them all into an array && provides a way
 //to execute them to get the answer
@@ -26,4 +27,6 @@ auto heuristicFunctions[] =
 {
 //@@ARRAY
 //@@END
-}
+};
+
+CCTypes determine(OneStepDisasm disasmer);
