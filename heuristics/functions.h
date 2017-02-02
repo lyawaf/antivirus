@@ -1,17 +1,8 @@
 #include "../wrapper.h"
+#include "../cctypes.h"
 //This file includes all heuristics functions,
 //embraces them all into an array && provides a way
 //to execute them to get the answer
-
-enum CCTypes
-{
-	cdecl,
-	stdcall,
-	msfastcall,
-	none
-};
-//the above values are return types for heuristic functions
-//those functions are of type OneStepDisasm -> CCTypes
 
 //following lines are inclusion of heuristic functions. 
 //They are included automatically with ./includefunctions script

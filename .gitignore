@@ -3,3 +3,6 @@
 .*.swp
 *.o
 main
+heuristics/.tags
+heuristics/.*.swp
+heuristics/*.o

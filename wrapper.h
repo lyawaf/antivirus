@@ -1,3 +1,6 @@
+#ifndef WRAPPER_INCLUDED
+#define WRAPPER_INCLUDED
+
 #include <cinttypes>
 #include <string>
 #include <iostream>
@@ -33,3 +36,5 @@ public:
 	~OneStepDisasm();
 	cs_insn* next();
 };
+
+#endif

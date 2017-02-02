@@ -33,7 +33,7 @@ def yank_fnname text
 		raise "Incorrect file format: expected CCTypes, got " + words[0]
 	end
 
-	fnname = words[1].split("()")[0] #if there is no space between the bracket and function name
+	fnname = words[1].split("(")[0] #if there is no space between the bracket and function name
 
 	return fnname
 end
@@ -51,6 +51,8 @@ if __FILE__ == $0
 	Dir.foreach "./" do |filename|
 		next if filename == "." or filename == ".." 
 		next if filename.split('').last(4).join == ".cpp" #so skip if it's a .cpp file
+		next if filename[0] == "." #skip if a hidden file: those usually aren't needed
+		next if filename.split('').last(2).join == ".o"   #precompiled fiels also aren't our thing
 		next if IgnoreFiles.include? filename #ignore other predetermined files, especially this script and functions.h
 		
 
@@ -117,14 +119,14 @@ if __FILE__ == $0
 			i += 1
 		end
 		#also write the end keyword, it's necessary for future
-		destination.write IncludeKeyword
+		destination.write ArrayKeyword
 
 		#now put down all the lambdas, but the last one is treated specifically as it doesn't have a ,
 		fnnames[0...-1].each do |name|
-			destination.write "%s,\n" % name
+			destination.write "	%s,\n" % name
 		end
 		#and the last one:
-		destination.write "%s\n" % name
+		destination.write "	%s\n" % fnnames[-1]
 		
 		#skip till the end of array in source file
 		while lines[i] != EndKeyword
@@ -152,12 +154,12 @@ if __FILE__ == $0
 		destination.write SizeKeyword
 
 		#now write down the size of the array
-		destination.write "const size_t heuristicFunctionsSize = %d;" % fnnames.length
+		destination.write "const size_t heuristicFunctionsSize = %d;\n" % fnnames.length
 
 		#skip till the end of size determinition in source file
 		while lines[i] != EndKeyword
 			if i == lines.length
-				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, ArrayKeyword.strip ]
+				abort "FATAL: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, SizeKeyword.strip ]
 			end
 
 			#skippity skip
