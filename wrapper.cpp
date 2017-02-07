@@ -9,7 +9,9 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
 
+
 	_mode = mode;
+
 	
 	//opening disassembler
 	if (mode == 32)
@@ -18,15 +20,23 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 		cs_open(CS_ARCH_X86, CS_MODE_64, &_handle);
 	else
 		throw runtime_error("Unrecognized mode");
+
+
+	//turning on additional instruction information
+	cs_option(_handle, CS_OPT_DETAIL, CS_OPT_ON);
+
 		
 	//allocating memory cache
 	_insn = cs_malloc(_handle);
+
 	
 	_codesize = _codefile.tellg() - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
+
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
 	_codeBegin.reset( new uint8_t[_codesize], uint8Deleter );
 	_codeCurrent = _codeBegin.get();
+
 
 	//positioning at offset startaddr
 	_codefile.seekg(startaddr, ios::beg);
@@ -46,7 +56,9 @@ OneStepDisasm::OneStepDisasm(OneStepDisasm& r)
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
 
+
 	_mode = r._mode;
+	
 	
 	//god damn C in big projects
 	if (_mode == 32)
@@ -56,11 +68,18 @@ OneStepDisasm::OneStepDisasm(OneStepDisasm& r)
 	else
 		throw runtime_error("Unrecognized mode");
 	
+	
+	//turning on additional instruction information
+	cs_option(_handle, CS_OPT_DETAIL, CS_OPT_ON);
+
+	
 	//positioning at offset startaddr
 	_codefile.seekg(_startaddr, ios::beg);
+
 		
 	//allocating memory cache
 	_insn = cs_malloc(_handle);
+
 
 	_codesize = r._codesize;
 	_startaddr = r._startaddr;
@@ -74,10 +93,44 @@ OneStepDisasm::~OneStepDisasm()
 }
 
 
-cs_insn* OneStepDisasm::next()
+OneStepDisasm::instruction::instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str)
+: mnemonic(cmnemonic)
+, operands(cop_str)
+, id(cid)
+, address(caddress)
+{  }
+
+
+OneStepDisasm::instruction::instruction(instruction& r)
+: mnemonic(r.mnemonic)
+, operands(r.operands)
+, id(r.id)
+, address(r.address)
+{  }
+
+
+OneStepDisasm::instruction::instruction(bool cempty)
+{
+	if (cempty != true)
+		throw runtime_error("Trying to construct an empty instruction with cempty set to false");
+	empty = true;
+}
+
+
+OneStepDisasm::instruction OneStepDisasm::next()
 {
 	bool success = cs_disasm_iter(_handle, &_codeCurrent, &_codesize, &_startaddr, _insn);
 	if (!success)
-		return NULL;
-	return _insn;
+	{
+		OneStepDisasm::instruction t {true};
+		return t;
+	}
+	OneStepDisasm::instruction t {_insn->id, _insn->address, _insn->mnemonic, _insn->op_str};
+	return t;
+}
+
+
+int OneStepDisasm::getMode()
+{
+	return _mode;
 }
