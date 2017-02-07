@@ -44,7 +44,7 @@ private:
 		string mnemonic;
 		string operands;
 
-		instruction(instruction&);
+		instruction(const instruction&);
 
 	private:
 		instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str);
