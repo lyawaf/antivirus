@@ -30,7 +30,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 	_insn = cs_malloc(_handle);
 
 	
-	_codesize = _codefile.tellg() - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
+	_codesize = static_cast<uint64_t >( _codefile.tellg() ) - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
 
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
@@ -98,18 +98,22 @@ OneStepDisasm::instruction::instruction(unsigned int cid, uint64_t caddress, con
 , operands(cop_str)
 , id(cid)
 , address(caddress)
+, empty(false)
 {  }
 
 
-OneStepDisasm::instruction::instruction(instruction& r)
+OneStepDisasm::instruction::instruction(const instruction& r)
 : mnemonic(r.mnemonic)
 , operands(r.operands)
 , id(r.id)
 , address(r.address)
+, empty(r.empty)
 {  }
 
 
 OneStepDisasm::instruction::instruction(bool cempty)
+: mnemonic("i fuck you")
+, operands("nigga bitch")
 {
 	if (cempty != true)
 		throw runtime_error("Trying to construct an empty instruction with cempty set to false");

@@ -1,5 +1,5 @@
-#include "../cctypes.h"
-#include "../wrapper.h"
+#include "cctypes.h"
+#include "wrapper.h"
 
 //a function that determines the calling convention by only the mov and ret commands
 //if retn has an argument, it's msfastcall or stdcall, otherwise it's cdecl

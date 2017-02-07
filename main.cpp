@@ -37,6 +37,9 @@ int main(int argc, char** argv)
 
 		switch (type)
 		{
+		case none:
+			cout <<"none\n";
+			break;
 		default:
 			cout <<"whatever, idc\n";
 		}

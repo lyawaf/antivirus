@@ -2,6 +2,28 @@
 
 #include "functions.h"
 
+
+//following lines are inclusion of heuristic functions. 
+//They are included automatically with ./includefunctions script
+
+//@@INCLUSIONS
+#include "heuristics/nikitail.h"
+//@@END
+
+
+CCTypes (*heuristicFunctions[]) (OneStepDisasm) =
+{
+//@@ARRAY
+	nikitailDeterminer
+//@@END
+};
+
+
+//@@SIZE
+const size_t heuristicFunctionsSize = 1;
+//@@END
+
+
 CCTypes determine(OneStepDisasm disasmer)
 {
 	std::map<CCTypes, int> weight;
