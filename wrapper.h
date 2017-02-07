@@ -30,6 +30,7 @@ private:
 	const uint8_t* _codeCurrent; //pointer to current instruction
 	size_t _codesize;
 
+	
 	//so this pretty much copies the capstone struct, but with strings and without bytes representation
 	struct instruction
 	{
@@ -49,10 +50,11 @@ private:
 		instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str);
 		instruction(bool cempty = true); //only applicable if cempty == true. Throws std::runtime_error
 	};
+
 	
 public:
 	OneStepDisasm(string filename, int mode, uint64_t startaddr); //throws std::runtime_error
-	OneStepDisasm(OneStepDisasm&);
+	OneStepDisasm(const OneStepDisasm&);
 	~OneStepDisasm();
 
 	//a function that disassembles and returns the next instruction

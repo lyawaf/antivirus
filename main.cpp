@@ -3,10 +3,10 @@
 #include <cstring>
 #include <stdexcept>
 
-extern "C"
-{
-	#include <capstone/capstone.h>
-}
+#include <capstone/capstone.h>
+
+#include "wrapper.h"
+#include "heuristics/functions.h"
 
 
 enum filetype
@@ -22,40 +22,29 @@ filetype determineFiletype(ifstream &);
 
 int main(int argc, char** argv)
 {
-	ifstream binary;
-
-	if (argc < 3)
-		throw runtime_error("Not enough arguments");
-
-	for (int i = 2; i < argc; i++)
-	{	
-		if (strtoul(argv[i], NULL, 0) == 0)
-			throw runtime_error("Invalid address");
-	}
-
-	binary.open(argv[1]);
-	
-	if (binary.is_open())
+	if (argc < 2)
 	{
-		filetype type = determineFiletype(binary);
-		switch(type)
+		cerr <<"usage: " <<argv[0] <<" filename" <<endl;
+		return 0;
+	}
+	string name {argv[1]};
+
+	try
+	{
+		OneStepDisasm d {name, 32, 0};
+
+		auto type = determine(d);
+
+		switch (type)
 		{
-			case PE:
-				//TODO handlers
-				break;
-			case ELF:
-				//also TODO handlers
-				break;
-			default:
-				throw runtime_error("Unknown filetype");
+		default:
+			cout <<"whatever, idc\n";
 		}
 	}
-	else
-		throw runtime_error("Unable to open file");
-
-	binary.close();
-
-	return 0;
+	catch (runtime_error e)
+	{
+		cerr <<"exception caught: " <<e.what() <<endl;
+	}
 }
 
 filetype determineFiletype(ifstream &bin)

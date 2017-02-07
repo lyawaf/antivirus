@@ -9,6 +9,7 @@
 //TODO: write the script
 
 //@@INCLUSIONS
+#include "nikitail.h"
 //@@END
 
 //following lines define an array of lambdas that call heuristic functions
@@ -17,13 +18,14 @@
 CCTypes (*heuristicFunctions[]) (OneStepDisasm) =
 {
 //@@ARRAY
+	nikitailDeterminer
 //@@END
 };
 
 //also as this is pretty much C stuff, it needs a variable to store the size of the array
 
 //@@SIZE
-const size_t heuristicFunctionsSize = 0;
+const size_t heuristicFunctionsSize = 1;
 //@@END
 
 CCTypes determine(OneStepDisasm disasmer);

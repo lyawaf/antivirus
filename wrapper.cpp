@@ -48,7 +48,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 }
 
 
-OneStepDisasm::OneStepDisasm(OneStepDisasm& r)
+OneStepDisasm::OneStepDisasm(const OneStepDisasm& r)
 : _filename(r._filename)
 , _codefile(r._filename, ios::in|ios::binary|ios::ate)
 , _codeBegin(r._codeBegin)
