@@ -3,6 +3,7 @@
 
 #include <cinttypes>
 #include <string>
+#include <set>
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -37,17 +38,21 @@ private:
 		friend OneStepDisasm;
 
 		//this thing tells if the disassemblation is over && no more instructions can be accessed
-		bool empty;
+		const bool empty;
 
-		unsigned int id;
-		uint64_t address;
-		string mnemonic;
-		string operands;
+		const unsigned int id;
+		const uint64_t address;
+		const string mnemonic;
+		const string operands;
+
+		//details (not all)
+		const set<uint8_t> groups; //the fuck this should be an enum. Why-why those ceeshniki
 
 		instruction(const instruction&);
+		instruction();
 
 	private:
-		instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str);
+		instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str, cs_detail* details);
 		instruction(bool cempty = true); //only applicable if cempty == true. Throws std::runtime_error
 	};
 

@@ -93,12 +93,13 @@ OneStepDisasm::~OneStepDisasm()
 }
 
 
-OneStepDisasm::instruction::instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str)
+OneStepDisasm::instruction::instruction(unsigned int cid, uint64_t caddress, const char* cmnemonic, const char* cop_str, cs_detail* details)
 : mnemonic(cmnemonic)
 , operands(cop_str)
 , id(cid)
 , address(caddress)
 , empty(false)
+, groups( details->groups, details->groups + details->groups_count ) //initialize a vector of groups from c array
 {  }
 
 
@@ -108,16 +109,31 @@ OneStepDisasm::instruction::instruction(const instruction& r)
 , id(r.id)
 , address(r.address)
 , empty(r.empty)
+, groups()
 {  }
+
+
+OneStepDisasm::instruction::instruction()
+: mnemonic("i fuck you")
+, operands("nigga bitch")
+, address(0)
+, id(0)
+, empty("true")
+, groups()
+{  }
+
 
 
 OneStepDisasm::instruction::instruction(bool cempty)
 : mnemonic("i fuck you")
 , operands("nigga bitch")
+, address(0)
+, id(0)
+, empty("true")
+, groups()
 {
 	if (cempty != true)
 		throw runtime_error("Trying to construct an empty instruction with cempty set to false");
-	empty = true;
 }
 
 
@@ -129,7 +145,7 @@ OneStepDisasm::instruction OneStepDisasm::next()
 		OneStepDisasm::instruction t {true};
 		return t;
 	}
-	OneStepDisasm::instruction t {_insn->id, _insn->address, _insn->mnemonic, _insn->op_str};
+	OneStepDisasm::instruction t {_insn->id, _insn->address, _insn->mnemonic, _insn->op_str, _insn->detail};
 	return t;
 }
 
