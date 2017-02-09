@@ -31,15 +31,13 @@ int main(int argc, char** argv)
 
 	try
 	{
-		OneStepDisasm d {name, 32, 0};
+		uint64_t t = 0x570;
+		OneStepDisasm d {name, 32, t};
 
 		auto type = determine(d);
 
 		switch (type)
 		{
-		case none:
-			cout <<"none\n";
-			break;
 		default:
 			cout <<"whatever, idc\n";
 		}

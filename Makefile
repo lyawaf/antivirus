@@ -1,6 +1,6 @@
 # capstone library name (without prefix 'lib' and suffix '.so')
 LIBNAME = capstone
-CXXHEADERS = -std=c++1y -I. -Wall
+CXXHEADERS = -std=c++1y -I. -Wall -Wno-reorder
 
 %.o: %.cpp %.h
 	${CXX} -c $< -o $@ $(CXXHEADERS)
