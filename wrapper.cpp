@@ -125,8 +125,8 @@ OneStepDisasm::instruction::instruction()
 
 
 OneStepDisasm::instruction::instruction(bool cempty)
-: mnemonic("i fuck you")
-, operands("nigga bitch")
+: mnemonic("empty insn")
+, operands("empty insn")
 , address(0)
 , id(0)
 , empty("true")
