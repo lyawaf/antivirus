@@ -34,15 +34,15 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
-	_codeBegin.reset( new uint8_t[_codesize], uint8Deleter );
-	_codeCurrent = _codeBegin.get();
+	_code_begin.reset( new uint8_t[_codesize], uint8Deleter );
+	_code_current = _code_begin.get();
 
 
 	//positioning at offset startaddr
 	_codefile.seekg(startaddr, ios::beg);
 	//and reading the file to memory
 	//via a bit of casts, because read() expects a *char and capstone expects uint8_t
-	auto codeBeginChar = const_cast<char*>(reinterpret_cast<const char*>(_codeCurrent));
+	auto codeBeginChar = const_cast<char*>(reinterpret_cast<const char*>(_code_current));
 	_codefile.read(codeBeginChar, _codesize);
 	_codefile.close();
 }
@@ -51,7 +51,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 OneStepDisasm::OneStepDisasm(const OneStepDisasm& r)
 : _filename(r._filename)
 , _codefile(r._filename, ios::in|ios::binary|ios::ate)
-, _codeBegin(r._codeBegin)
+, _code_begin(r._code_begin)
 {
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
@@ -83,7 +83,7 @@ OneStepDisasm::OneStepDisasm(const OneStepDisasm& r)
 
 	_codesize = r._codesize;
 	_startaddr = r._startaddr;
-	_codeCurrent = r._codeCurrent;
+	_code_current = r._code_current;
 }
 
 	
@@ -139,7 +139,7 @@ OneStepDisasm::instruction::instruction(bool cempty)
 
 OneStepDisasm::instruction OneStepDisasm::next()
 {
-	bool success = cs_disasm_iter(_handle, &_codeCurrent, &_codesize, &_startaddr, _insn);
+	bool success = cs_disasm_iter(_handle, &_code_current, &_codesize, &_startaddr, _insn);
 	if (!success)
 	{
 		OneStepDisasm::instruction t {true};
@@ -150,7 +150,7 @@ OneStepDisasm::instruction OneStepDisasm::next()
 }
 
 
-int OneStepDisasm::getMode()
+int OneStepDisasm::get_mode()
 {
 	return _mode;
 }

@@ -27,8 +27,8 @@ private:
 	string _filename;
 	ifstream _codefile;
 	
-	shared_ptr<uint8_t> _codeBegin; //code keeper
-	const uint8_t* _codeCurrent; //pointer to current instruction
+	shared_ptr<uint8_t> _code_begin; //code keeper
+	const uint8_t* _code_current; //pointer to current instruction
 	size_t _codesize;
 
 	
@@ -46,7 +46,7 @@ private:
 		const string operands;
 
 		//details (not all)
-		const set<uint8_t> groups; //the fuck this should be an enum. Why-why those ceeshniki
+		const set<uint8_t> groups; //the fuck, this should be an enum. Why-why those ceeshniki
 
 		instruction(const instruction&);
 		instruction();
@@ -66,7 +66,7 @@ public:
 	instruction next();
 
 	//a simple getter
-	int getMode();
+	int get_mode();
 };
 
 #endif
