@@ -109,7 +109,7 @@ OneStepDisasm::instruction::instruction(const instruction& r)
 , id(r.id)
 , address(r.address)
 , empty(r.empty)
-, groups()
+, groups(r.groups)
 {  }
 
 
