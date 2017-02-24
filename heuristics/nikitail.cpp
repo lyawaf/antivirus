@@ -73,6 +73,12 @@ set<string> r9 {
 	"r9"
 };
 
+
+vector<x86_reg> parse_brackets(string operand)
+{
+	
+}
+
 //a function that determines whether set contains element
 template <typename T, typename P>
 inline bool contains(set<T> s, P elem)
@@ -99,6 +105,14 @@ inline x86_reg strtoreg(string reg)
 	else if (contains(r9, reg))
 		return X86_REG_R8;
 	return X86_REG_INVALID;	
+}
+
+//a function that appends to first set if not in both
+template <typename T, typename S>
+inline void add_to_first(T elem, set<S> f, set<S> s)
+{
+	if (!contains(f, elem) && !contains(s, elem))
+		f.insert(elem);
 }
 
 //a function that given a disassembler will determine the registers used until the ret command or end of disassembly
@@ -134,6 +148,14 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 		else
 		{
 			auto operands = split(instr.operands, ", ");
+			
+			//appending registers in brackets
+			for (auto i : operands)
+			{
+				auto t = parse_brackets(i);
+				for (auto j : t)
+					add_to_first(j, read, written);
+			}
 
 			if (contains(good_doubly_operations, instr.mnemonic))
 			{
