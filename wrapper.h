@@ -20,7 +20,9 @@ class OneStepDisasm
 private:
 	csh _handle;
 	cs_insn *_insn;
-	uint64_t _startaddr;
+	uint64_t _startaddr; //startaddr for physical address
+	uint64_t _v_addr; //and v_addr for virtual
+	size_t _lifetime; //max value of jumps to be explored
 
 	int _mode;
 
@@ -58,7 +60,7 @@ private:
 
 	
 public:
-	OneStepDisasm(string filename, int mode, uint64_t startaddr); //throws std::runtime_error
+	OneStepDisasm(string filename, int mode, uint64_t startaddr, uint64_t _v_addr); //throws std::runtime_error
 	OneStepDisasm(const OneStepDisasm&);
 	~OneStepDisasm();
 
@@ -67,6 +69,9 @@ public:
 
 	//a simple getter
 	int get_mode();
+
+	//a function that clones on given virtual address
+	OneStepDisasm clone_at(const uint64_t &addr);
 };
 
 #endif

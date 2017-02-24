@@ -2,9 +2,11 @@
 using namespace std;
 
 //TODO: better exceptions
-OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
+OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint64_t v_addr)
 : _filename(filename)
 , _codefile(filename, ios::in|ios::binary|ios::ate) //opening the file in binary mode
+,_startaddr(startaddr)
+,_v_addr(v_addr)
 {
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
@@ -35,6 +37,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr)
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
 	_code_begin.reset( new uint8_t[_codesize], uint8Deleter );
+
 	_code_current = _code_begin.get();
 
 
@@ -84,6 +87,9 @@ OneStepDisasm::OneStepDisasm(const OneStepDisasm& r)
 	_codesize = r._codesize;
 	_startaddr = r._startaddr;
 	_code_current = r._code_current;
+	//also copy lifetime and virtual address
+	_lifetime = r._lifetime;
+	_v_addr = r._v_addr;
 }
 
 	
@@ -139,7 +145,7 @@ OneStepDisasm::instruction::instruction(bool cempty)
 
 OneStepDisasm::instruction OneStepDisasm::next()
 {
-	bool success = cs_disasm_iter(_handle, &_code_current, &_codesize, &_startaddr, _insn);
+	bool success = cs_disasm_iter(_handle, &_code_current, &_codesize, &_v_addr, _insn); //changed _startaddr to _v_addr
 	if (!success)
 	{
 		OneStepDisasm::instruction t {true};
@@ -149,6 +155,21 @@ OneStepDisasm::instruction OneStepDisasm::next()
 	return t;
 }
 
+OneStepDisasm OneStepDisasm::clone_at(const uint64_t &addr)
+{
+	if (addr >= _v_addr)
+	{
+		//3 argument: must to check overflow, fix it later
+		OneStepDisasm child(_filename, _mode, _startaddr + (addr - _v_addr), addr);
+		return child;
+	}
+	else
+	{
+		//again need to add int overflow checking
+		OneStepDisasm child(_filename, _mode, _startaddr - (_v_addr - addr), addr);
+		return child;
+	}
+}
 
 int OneStepDisasm::get_mode()
 {
