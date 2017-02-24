@@ -72,19 +72,14 @@ set<string> r8 {
 set<string> r9 {
 	"r9"
 };
-
-
-vector<x86_reg> parse_brackets(string operand)
-{
-	
-}
-
+//
 //a function that determines whether set contains element
 template <typename T, typename P>
 inline bool contains(set<T> s, P elem)
 {
 	return s.find(elem) != s.end();
 }
+
 
 inline x86_reg strtoreg(string reg)
 {
@@ -107,6 +102,58 @@ inline x86_reg strtoreg(string reg)
 	return X86_REG_INVALID;	
 }
 
+
+vector<x86_reg> parse_brackets(string operand)
+{
+	vector<x86_reg> result {0};
+
+	size_t index;
+	string creg = "";
+
+	index = operand.find('[');
+	if (index == string::npos) //may happen
+		return result;
+	index += 1;
+	
+	//we are now positioned within a register
+	//we need to read it's name and track it
+	for (; operand[index] != ']'; ++index)
+	{
+		//if this holds the register was read
+		if (operand[index] < 'a' || operand[index] > 'z')
+		{
+			//unless this, because that must have been r8 or r9 register
+			if (operand[index] == '8' && operand[index] == '9')
+			{
+				creg.push_back(operand[index]);
+				continue;
+			}
+				
+			//add register to result unless it was invalid
+			auto reg = strtoreg(creg);
+			if (reg != X86_REG_INVALID)
+				result.push_back(reg);
+
+			//reset current register
+			creg = "";
+
+			//travel till next register
+			while(operand[index] < 'a' || operand[index] > 'z')
+			{
+				index += 1;
+				//in case of end
+				if (operand[index] == ']')
+					return result;
+			}
+		}
+		else
+		{
+			creg.push_back(operand[index]);
+		}
+	}
+}
+
+
 //a function that appends to first set if not in both
 template <typename T, typename S>
 inline void add_to_first(T elem, set<S> f, set<S> s)
@@ -117,7 +164,7 @@ inline void add_to_first(T elem, set<S> f, set<S> s)
 
 //a function that given a disassembler will determine the registers used until the ret command or end of disassembly
 //first set is registers read, second is registers written
-pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
+set<x86_reg> registers_used(OneStepDisasm d)
 {
 	set<x86_reg> read {};
 	set<x86_reg> written {};
@@ -143,7 +190,7 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 			cout << "found a return command\n";
 
 			if (!DEBUG)
-				return make_pair(read, written);
+				return read;
 		}
 		else
 		{
@@ -167,20 +214,15 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 			}
 		}
 	}
-	return make_pair(read, written);
+	return read;
 }
 
 CCTypes nikitailDeterminer(OneStepDisasm d)
 {
-	auto t = registers_used(d);
-	auto read = t.first;
-	auto written = t.second;
+	auto read = registers_used(d);
 
 	cout <<"registers read: ";
 	for (auto i : read)
-		cout <<i <<' ';
-	cout <<endl <<"registers written: ";
-	for (auto i : written)
 		cout <<i <<' ';
 	cout <<endl;
 
