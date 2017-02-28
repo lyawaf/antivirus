@@ -10,10 +10,13 @@
 using namespace std;
 
 #include <capstone/capstone.h>
+<<<<<<< HEAD
 
 //deleter used for arrays of text
 auto uint8Deleter = [](uint8_t* pointer) -> void { delete[] pointer; };
 
+=======
+>>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a
 
 class OneStepDisasm
 {

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -15,13 +16,16 @@ enum filetype
 	ELF,
 	DAFUCK
 };
+=======
+#include <cstdio>
+>>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a
 
+#include "wrapper.h"
 using namespace std;
-
-filetype determineFiletype(ifstream &);
 
 int main(int argc, char** argv)
 {
+<<<<<<< HEAD
 	if (argc < 2)
 	{
 		cerr <<"usage: " <<argv[0] <<" filename" <<endl;
@@ -64,3 +68,13 @@ filetype determineFiletype(ifstream &bin)
 
 	return DAFUCK;
 }
+=======
+	string filename = "bin.bin";
+	OneStepDisasm d(filename, 64, 1);
+	
+	for (auto ins = d.next(); ins != NULL; ins = d.next())
+		printf("0x%" PRIx64 ":\t%s\t\t%s\n", ins[0].address, ins[0].mnemonic, ins[0].op_str);
+	
+	return 0;
+}
+>>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a

@@ -117,13 +117,13 @@ vector<x86_reg> parse_brackets(string operand)
 	
 	//we are now positioned within a register
 	//we need to read it's name and track it
-	for (; operand[index] != ']'; ++index)
+	for (; operand[index-1] != ']'; ++index)
 	{
 		//if this holds the register was read
 		if (operand[index] < 'a' || operand[index] > 'z')
 		{
 			//unless this, because that must have been r8 or r9 register
-			if (operand[index] == '8' && operand[index] == '9')
+			if (operand[index] == '8' || operand[index] == '9')
 			{
 				creg.push_back(operand[index]);
 				continue;
@@ -131,8 +131,11 @@ vector<x86_reg> parse_brackets(string operand)
 				
 			//add register to result unless it was invalid
 			auto reg = strtoreg(creg);
+			cout << "found " <<creg <<endl;
 			if (reg != X86_REG_INVALID)
 				result.push_back(reg);
+			else
+				cout <<"it was invalid?\n";
 
 			//reset current register
 			creg = "";
@@ -142,15 +145,17 @@ vector<x86_reg> parse_brackets(string operand)
 			{
 				index += 1;
 				//in case of end
-				if (operand[index] == ']')
+				if (operand[index] == ']' || operand[index] == '\0')
 					return result;
 			}
+			index -= 1;
 		}
 		else
 		{
 			creg.push_back(operand[index]);
 		}
 	}
+	return result;
 }
 
 
