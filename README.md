@@ -1,8 +1,24 @@
 Simple calling convention determiner
 ==================================
 
-Usage: ./`parser or whatever` `addresses` `binary name`
+## What is it?
 
-To install use make
+CCPtool is an instrument used to determine calling conventions of c-like
+functions in binary files. It's simple to use and simple to embed as a part
+chain of commands or as a part of other code.
 
-***TODO:*** GOD DAMN WE NEED TO DO CODE REFACTORING CARL
+## Requirements
+
+Capstone version >= 3.0.1
+gcc version >= 4.8.5 supporting -std=c++1y
+
+## Installation
+
+    cd CCPtool && make && make install
+
+## Usage
+
+CCPtool uses virtual addresses of functions provided to it to seek to
+functions in file to analyse.
+
+    CCPtool filename vaddr1 [vaddr2, ...]
