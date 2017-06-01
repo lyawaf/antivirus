@@ -1,12 +1,13 @@
+<<<<<<< HEAD
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <stdexcept>
 
-extern "C"
-{
-	#include <capstone/capstone.h>
-}
+#include <capstone/capstone.h>
+
+#include "wrapper.h"
+#include "heuristics/functions.h"
 
 
 enum filetype
@@ -15,47 +16,40 @@ enum filetype
 	ELF,
 	DAFUCK
 };
+=======
+#include <cstdio>
+>>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a
 
+#include "wrapper.h"
 using namespace std;
-
-filetype determineFiletype(ifstream &);
 
 int main(int argc, char** argv)
 {
-	ifstream binary;
-
-	if (argc < 3)
-		throw runtime_error("Not enough arguments");
-
-	for (int i = 2; i < argc; i++)
-	{	
-		if (strtoul(argv[i], NULL, 0) == 0)
-			throw runtime_error("Invalid address");
-	}
-
-	binary.open(argv[1]);
-	
-	if (binary.is_open())
+<<<<<<< HEAD
+	if (argc < 2)
 	{
-		filetype type = determineFiletype(binary);
-		switch(type)
+		cerr <<"usage: " <<argv[0] <<" filename" <<endl;
+		return 0;
+	}
+	string name {argv[1]};
+
+	try
+	{
+		uint64_t t = 0xb0;
+		OneStepDisasm d {name, 64, t, 0x4000b0};
+
+		auto type = determine(d);
+
+		switch (type)
 		{
-			case PE:
-				//TODO handlers
-				break;
-			case ELF:
-				//also TODO handlers
-				break;
-			default:
-				throw runtime_error("Unknown filetype");
+		default:
+			cout <<"whatever, idc\n";
 		}
 	}
-	else
-		throw runtime_error("Unable to open file");
-
-	binary.close();
-
-	return 0;
+	catch (runtime_error e)
+	{
+		cerr <<"exception caught: " <<e.what() <<endl;
+	}
 }
 
 filetype determineFiletype(ifstream &bin)
@@ -74,3 +68,13 @@ filetype determineFiletype(ifstream &bin)
 
 	return DAFUCK;
 }
+=======
+	string filename = "bin.bin";
+	OneStepDisasm d(filename, 64, 1);
+	
+	for (auto ins = d.next(); ins != NULL; ins = d.next())
+		printf("0x%" PRIx64 ":\t%s\t\t%s\n", ins[0].address, ins[0].mnemonic, ins[0].op_str);
+	
+	return 0;
+}
+>>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a

@@ -2,7 +2,7 @@
 
 #This script looks at every .h file in this directory and makes a heuristic function out of it
 #It searches for line "//@@FUNCTION" followed by the line like "CCTypes name"
-#whence it takes the name of the function and uses it in functions.h
+#whence it takes the name of the function and uses it in functions.cpp
 FunctionKeyword = "//@@FUNCTION\n"
 IncludeKeyword = "//@@INCLUSIONS\n"
 ArrayKeyword = "//@@ARRAY\n"
@@ -40,8 +40,8 @@ end
 
 if __FILE__ == $0
 
-	unless File.file? "functions.h"
-		abort "FATAL: no file 'functions.h'. Check if you're running the script in the right directory"
+	unless File.file? "functions.cpp"
+		abort "FATAL: no file 'functions.cpp'. Check if you're running the script in the right directory"
 	end
 
 	#first we obtain the filenames and function names
@@ -69,8 +69,8 @@ if __FILE__ == $0
 	end
 
 	lines = ""
-	#extract the content of functions.h ...
-	File.open "functions.h", "r" do |source| 
+	#extract the content of functions.cpp ...
+	File.open "functions.cpp", "r" do |source| 
 		lines = source.read.each_line.to_a
 	end
 	
@@ -82,7 +82,7 @@ if __FILE__ == $0
 		#write the lines of source text to the new text until we meet the first keyword
 		while lines[i] != IncludeKeyword
 			if i == lines.length
-				abort "FATAL: incorrect functions.h structure: can't find %s" % IncludeKeyword.strip  
+				abort "FATAL: incorrect functions.cpp structure: can't find %s" % IncludeKeyword.strip  
 			end
 			
 			destination.write lines[i]
@@ -99,7 +99,7 @@ if __FILE__ == $0
 		#skip till the end of inclusions in source file
 		while lines[i] != EndKeyword
 			if i == lines.length
-				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, IncludeKeyword.strip ]
+				abort "FATAl: incorrect functions.cpp structure: can't find %s after %s" % [ EndKeyword.strip, IncludeKeyword.strip ]
 			end
 
 			#skippity skip
@@ -112,7 +112,7 @@ if __FILE__ == $0
 		#write the lines of source text to the new text until we meet the second keyword
 		while lines[i] != ArrayKeyword
 			if i == lines.length
-				abort "FATAL: incorrect functions.h structure: can't find %s after %s" % [ ArrayKeyword.strip, IncludeKeyword.strip ]  
+				abort "FATAL: incorrect functions.cpp structure: can't find %s after %s" % [ ArrayKeyword.strip, IncludeKeyword.strip ]  
 			end
 			
 			destination.write lines[i]
@@ -131,7 +131,7 @@ if __FILE__ == $0
 		#skip till the end of array in source file
 		while lines[i] != EndKeyword
 			if i == lines.length
-				abort "FATAl: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, ArrayKeyword.strip ]
+				abort "FATAl: incorrect functions.cpp structure: can't find %s after %s" % [ EndKeyword.strip, ArrayKeyword.strip ]
 			end
 
 			#skippity skip
@@ -144,7 +144,7 @@ if __FILE__ == $0
 		#write the lines of source text to the new text until we meet the third keyword
 		while lines[i] != SizeKeyword
 			if i == lines.length
-				abort "FATAL: incorrect functions.h structure: can't find %s after %s" % [ SizeKeyword.strip, ArrayKeyword.strip ]  
+				abort "FATAL: incorrect functions.cpp structure: can't find %s after %s" % [ SizeKeyword.strip, ArrayKeyword.strip ]  
 			end
 			
 			destination.write lines[i]
@@ -159,7 +159,7 @@ if __FILE__ == $0
 		#skip till the end of size determinition in source file
 		while lines[i] != EndKeyword
 			if i == lines.length
-				abort "FATAL: incorrect functions.h structure: can't find %s after %s" % [ EndKeyword.strip, SizeKeyword.strip ]
+				abort "FATAL: incorrect functions.cpp structure: can't find %s after %s" % [ EndKeyword.strip, SizeKeyword.strip ]
 			end
 
 			#skippity skip
@@ -177,6 +177,6 @@ if __FILE__ == $0
 	end
 
 	#cleaning up, because after the above we have two files, with one too old and another with a wrong name
-	File.delete "functions.h"
-	File.rename ".functions.swap", "functions.h"
+	File.delete "functions.cpp"
+	File.rename ".functions.swap", "functions.cpp"
 end

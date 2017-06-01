@@ -2,6 +2,7 @@
 .tags
 .*.swp
 *.o
+*.bin
 main
 heuristics/.tags
 heuristics/.*.swp
