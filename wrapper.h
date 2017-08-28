@@ -10,13 +10,9 @@
 using namespace std;
 
 #include <capstone/capstone.h>
-<<<<<<< HEAD
 
 //deleter used for arrays of text
 auto uint8Deleter = [](uint8_t* pointer) -> void { delete[] pointer; };
-
-=======
->>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a
 
 class OneStepDisasm
 {
@@ -27,7 +23,7 @@ private:
 	uint64_t _v_addr; //and v_addr for virtual
 	size_t _lifetime; //max value of jumps to be explored
 
-	int _mode;
+	int _mode; //32 or 64
 
 	string _filename;
 	ifstream _codefile;

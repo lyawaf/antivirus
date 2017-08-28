@@ -22,8 +22,8 @@ int main(int argc, char** argv)
 
 	try
 	{
-		uint64_t t = 0xb0;
-		OneStepDisasm d {name, 64, t, 0x4000b0};
+		uint64_t t = 0x255d;
+		OneStepDisasm d {name, 64, t, 0x40255d};
 
 		auto type = determine(d);
 

@@ -66,6 +66,12 @@ set<string> di {
 set<string> si {
 	"rsi", "esi", "si"
 };
+set<string> bp {
+	"rbp", "ebp", "bp"
+};
+set<string> sp {
+	"rbp", "esp", "sp"
+};
 set<string> r8 {
 	"r8"
 };
@@ -97,6 +103,10 @@ inline x86_reg strtoreg(string reg)
 		return X86_REG_SI;
 	else if (contains(di, reg))
 		return X86_REG_DI;
+	else if (contains(bp, reg))
+		return X86_REG_BP;
+	else if (contains(sp, reg))
+		return X86_REG_SP;
 	else if (contains(r9, reg))
 		return X86_REG_R9;
 	else if (contains(r9, reg))
@@ -136,7 +146,7 @@ vector<x86_reg> parse_brackets(string operand)
 			//add register to result unless it was invalid
 			auto reg = strtoreg(creg);
 			if (DEBUG)
-				cout << "found " <<creg <<endl;
+				cout << "found in []: " <<creg <<endl;
 			if (reg != X86_REG_INVALID)
 				result.push_back(reg);
 			else if (DEBUG)

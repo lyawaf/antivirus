@@ -5,8 +5,8 @@ using namespace std;
 OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint64_t v_addr)
 : _filename(filename)
 , _codefile(filename, ios::in|ios::binary|ios::ate) //opening the file in binary mode
-,_startaddr(startaddr)
-,_v_addr(v_addr)
+, _startaddr(startaddr)
+, _v_addr(v_addr)
 {
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
@@ -32,7 +32,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint
 	_insn = cs_malloc(_handle);
 
 	
-	_codesize = static_cast<uint64_t >( _codefile.tellg() ) - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
+	_codesize = static_cast<uint64_t>( _codefile.tellg() ) - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
 
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
