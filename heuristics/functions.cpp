@@ -28,7 +28,7 @@ CCTypes determine(OneStepDisasm disasmer)
 {
 	std::map<CCTypes, int> weight;
 
-	for (unsigned int i = 0; i < heuristicFunctionsSize; ++i)
+	for (size_t i = 0; i < heuristicFunctionsSize; ++i)
 	{
 		auto type = heuristicFunctions[i](disasmer);
 		weight[type] += 1;

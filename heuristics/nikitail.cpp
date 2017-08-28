@@ -16,7 +16,7 @@ using std::getline;
 
 
 
-const bool DEBUG = true;
+constexpr bool DEBUG = true;
 
 
 //a function that splits the string
@@ -81,9 +81,11 @@ inline bool contains(set<T> s, P elem)
 }
 
 
+//as it's better to operate with register types && not strings,
+//we use this function to convert
 inline x86_reg strtoreg(string reg)
 {
-	if (contains(ax, reg))
+	     if (contains(ax, reg))
 		return X86_REG_AX;
 	else if (contains(bx, reg))
 		return X86_REG_BX;
@@ -99,13 +101,15 @@ inline x86_reg strtoreg(string reg)
 		return X86_REG_R9;
 	else if (contains(r9, reg))
 		return X86_REG_R8;
-	return X86_REG_INVALID;	
+	else
+		return X86_REG_INVALID;	
 }
 
 
+//finds out which registers were used in [] in operand
 vector<x86_reg> parse_brackets(string operand)
 {
-	vector<x86_reg> result {0};
+	vector<x86_reg> result;
 
 	size_t index;
 	string creg = "";
@@ -131,11 +135,12 @@ vector<x86_reg> parse_brackets(string operand)
 				
 			//add register to result unless it was invalid
 			auto reg = strtoreg(creg);
-			cout << "found " <<creg <<endl;
+			if (DEBUG)
+				cout << "found " <<creg <<endl;
 			if (reg != X86_REG_INVALID)
 				result.push_back(reg);
-			else
-				cout <<"it was invalid?\n";
+			else if (DEBUG)
+				cout <<"it was invalid? " <<creg <<endl;
 
 			//reset current register
 			creg = "";
@@ -226,10 +231,13 @@ CCTypes nikitailDeterminer(OneStepDisasm d)
 {
 	auto read = registers_used(d);
 
-	cout <<"registers read: ";
-	for (auto i : read)
-		cout <<i <<' ';
-	cout <<endl;
+	if (DEBUG)
+	{
+		cout <<"registers read: ";
+		for (auto i : read)
+			cout <<i <<' ';
+		cout <<endl;
+	}
 
 
 	return none;

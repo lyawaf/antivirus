@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -10,22 +9,10 @@
 #include "heuristics/functions.h"
 
 
-enum filetype
-{
-	PE = 0,
-	ELF,
-	DAFUCK
-};
-=======
-#include <cstdio>
->>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a
-
-#include "wrapper.h"
 using namespace std;
 
 int main(int argc, char** argv)
 {
-<<<<<<< HEAD
 	if (argc < 2)
 	{
 		cerr <<"usage: " <<argv[0] <<" filename" <<endl;
@@ -51,30 +38,3 @@ int main(int argc, char** argv)
 		cerr <<"exception caught: " <<e.what() <<endl;
 	}
 }
-
-filetype determineFiletype(ifstream &bin)
-{	
-	char type[4];
-	bin.read(type, 4);
-
-	if (strncmp(type, "\x7F\x45\x4C\x46", 4) == 0) //if 4 bytes == ".ELF"
-	{
-		return ELF;
-	}
-	else if(strncmp(type, "MZ", 2) == 0) 
-	{
-		return PE;
-	}
-
-	return DAFUCK;
-}
-=======
-	string filename = "bin.bin";
-	OneStepDisasm d(filename, 64, 1);
-	
-	for (auto ins = d.next(); ins != NULL; ins = d.next())
-		printf("0x%" PRIx64 ":\t%s\t\t%s\n", ins[0].address, ins[0].mnemonic, ins[0].op_str);
-	
-	return 0;
-}
->>>>>>> 0bd8beca2410f242e8beec6e1df1149a0692e11a
