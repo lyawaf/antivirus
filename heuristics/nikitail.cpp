@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <cassert>
 
 #include "nikitail.h"
 
@@ -16,7 +17,7 @@ using std::getline;
 
 
 
-constexpr bool DEBUG = true;
+constexpr bool DEBUG = false;
 
 
 //a function that splits the string
@@ -117,9 +118,9 @@ inline x86_reg strtoreg(string reg)
 
 
 //finds out which registers were used in [] in operand
-vector<x86_reg> parse_brackets(string operand)
+set<x86_reg> parse_brackets(const string& operand)
 {
-	vector<x86_reg> result;
+	set<x86_reg> result;
 
 	size_t index;
 	string creg = "";
@@ -148,7 +149,7 @@ vector<x86_reg> parse_brackets(string operand)
 			if (DEBUG)
 				cout << "found in []: " <<creg <<endl;
 			if (reg != X86_REG_INVALID)
-				result.push_back(reg);
+				result.insert(reg);
 			else if (DEBUG)
 				cout <<"it was invalid? " <<creg <<endl;
 
@@ -174,6 +175,22 @@ vector<x86_reg> parse_brackets(string operand)
 }
 
 
+//finds out which registers were used in an operand
+set<x86_reg> parse_operand(const string& operand)
+{
+	if (operand.find('[') != string::npos)
+	{
+		return parse_brackets(operand);
+	}
+	auto r = strtoreg(operand);
+	if (r == X86_REG_INVALID)
+	{
+		return set<x86_reg>();
+	}
+	return set<x86_reg> {r};
+}
+
+
 //a function that appends to first set if not in both
 template <typename T, typename S>
 inline void add_to_first(T elem, set<S> f, set<S> s)
@@ -192,45 +209,86 @@ set<x86_reg> registers_used(OneStepDisasm d)
 	{
 		auto instr = d.next();
 		if (instr.empty)
+		{
+			if (DEBUG)
+			{
+				cout << "stopping on empty instruction\n";
+			}
 			break;
+		}
 
 		if (DEBUG)
+		{
 			cout << "0x" <<hex << instr.address <<"\t\t" <<instr.mnemonic <<"\t" <<instr.operands <<endl;
+		}
 
+		//for now i choose to ignore jump && call instructions
 		if (contains(instr.groups, CS_GRP_JUMP))
 		{
-			cout << "found a jump command\n";
+			auto dest = parse_operand(instr.operands);
+			if (DEBUG)
+			{
+				cout << "found a jump command: ";
+				if (dest.empty())
+				{
+					cout << "offset " << instr.operands <<endl;
+				}
+				else
+				{
+					cout << "expression " << instr.operands <<endl;
+				}
+			}
 		}
 		else if (contains(instr.groups, CS_GRP_CALL))
 		{
-			cout << "found a call command\n";
+			auto dest = parse_operand(instr.operands);
+			if (DEBUG)
+			{
+				cout << "found a call command: ";
+				if (dest.empty())
+				{
+					cout << "offset " << instr.operands <<endl;
+				}
+				else
+				{
+					cout << "expression " << instr.operands <<endl;
+				}
+			}
 		}
 		else if (contains(instr.groups, CS_GRP_RET))
 		{
-			cout << "found a return command\n";
-
+			if (DEBUG)
+			{
+				cout << "found a return command\n";
+			}
 			if (!DEBUG)
+			{
 				return read;
+			}
 		}
 		else
 		{
 			auto operands = split(instr.operands, ", ");
 			
-			//appending registers in brackets
-			for (auto i : operands)
-			{
-				auto t = parse_brackets(i);
-				for (auto j : t)
-					add_to_first(j, read, written);
-			}
-
 			if (contains(good_doubly_operations, instr.mnemonic))
 			{
-				//check which register it is
+				assert(operands.size() == 2);
+				//add every parsed register as read
 				for (auto i : operands)
 				{
-
+					auto t = parse_operand(i);
+					read.insert(t.begin(), t.end());
 				}
+			}
+			else if (contains(good_rightly_operations, instr.mnemonic))
+			{
+				assert(operands.size() == 2);
+				//add only right-hand parsed operand as read
+				auto t = parse_operand(operands[1]);
+				read.insert(t.begin(), t.end());
+				//also if there were brackets involved, they were also read, add them
+				t = parse_brackets(operands[0]);
+				read.insert(t.begin(), t.end());
 			}
 		}
 	}
@@ -241,13 +299,13 @@ CCTypes nikitailDeterminer(OneStepDisasm d)
 {
 	auto read = registers_used(d);
 
-	if (DEBUG)
-	{
+//	if (DEBUG)
+//	{
 		cout <<"registers read: ";
 		for (auto i : read)
 			cout <<i <<' ';
 		cout <<endl;
-	}
+//	}
 
 
 	return none;
