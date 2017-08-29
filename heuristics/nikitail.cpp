@@ -48,6 +48,27 @@ set<string> good_rightly_operations {
 	"mov", "movb"
 };
 
+
+set<string> operations_rr {
+	"cmp"
+};
+set<string> operations_wr {
+	"mov", "movb", "lea"
+};
+set<string> operations_br {
+	"add", "sub", "dec", "xor", "and", "or", "shl", "shr"
+};
+set<string> operations_w {
+	"pop"
+};
+set<string> operations_wa {
+	"mul", "div"
+};
+set<string> operations_wc {
+	"mul", "div"
+};
+
+
 //sets for different mnemonics for registers
 set<string> ax {
 	"eax", "rax", "ax", "al", "ah"
@@ -82,9 +103,19 @@ set<string> r9 {
 //
 //a function that determines whether set contains element
 template <typename T, typename P>
-inline bool contains(set<T> s, P elem)
+inline bool contains(const set<T>& s, const P& elem)
 {
 	return s.find(elem) != s.end();
+}
+//determines wether some string in set is a superstring of seekee
+bool contains_as_substring(const set<string>& s, const string& elem)
+{
+	for (auto i : s)
+	{
+		if (i.find(elem) != string::npos)
+			return true;
+	}
+	return false;
 }
 
 
@@ -176,9 +207,9 @@ set<x86_reg> parse_brackets(const string& operand)
 
 
 //finds out which registers were used in an operand
-set<x86_reg> parse_operand(const string& operand)
+set<x86_reg> parse_operand(const string& operand, bool lookup_brackets = true)
 {
-	if (operand.find('[') != string::npos)
+	if (lookup_brackets && operand.find('[') != string::npos)
 	{
 		return parse_brackets(operand);
 	}
@@ -193,15 +224,23 @@ set<x86_reg> parse_operand(const string& operand)
 
 //a function that appends to first set if not in both
 template <typename T, typename S>
-inline void add_to_first(T elem, set<S> f, set<S> s)
+inline void add_to_first(const T& elem, set<S>& f, const set<S>& s)
 {
 	if (!contains(f, elem) && !contains(s, elem))
 		f.insert(elem);
 }
+//same but adds a set of elements
+template <typename T, typename S>
+inline void add_to_first(const set<T>& inp, set<S>& f, const set<S>& s)
+{
+	for (auto i : inp)
+		add_to_first(i, f, s);
+}
+
 
 //a function that given a disassembler will determine the registers used until the ret command or end of disassembly
 //first set is registers read, second is registers written
-set<x86_reg> registers_used(OneStepDisasm d)
+pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 {
 	set<x86_reg> read {};
 	set<x86_reg> written {};
@@ -263,46 +302,109 @@ set<x86_reg> registers_used(OneStepDisasm d)
 			}
 			if (!DEBUG)
 			{
-				return read;
+				return make_pair(read, written);
 			}
 		}
 		else
 		{
 			auto operands = split(instr.operands, ", ");
 			
-			if (contains(good_doubly_operations, instr.mnemonic))
+			if (contains_as_substring(operations_wr, instr.mnemonic))
 			{
 				assert(operands.size() == 2);
-				//add every parsed register as read
-				for (auto i : operands)
+				//a recurring pattern: check firest operand for all read
+				auto t = parse_operand(operands[1], true);
+				add_to_first(t, read, written);
+				//remember that brackets were read
+				t = parse_brackets(operands[0]);
+				add_to_first(t, read, written);
+				//and second for read and written
+				t = parse_operand(operands[0], false);
+				written.insert(t.begin(), t.end());
+			}
+			else if (contains_as_substring(operations_rr, instr.mnemonic))
+			{
+				assert(operands.size() == 2);
+				
+				for (auto op : operands)
 				{
-					auto t = parse_operand(i);
-					read.insert(t.begin(), t.end());
+					auto t = parse_operand(op, true);
+					add_to_first(t, read, written);
 				}
 			}
-			else if (contains(good_rightly_operations, instr.mnemonic))
+			else if (contains_as_substring(operations_br, instr.mnemonic))
 			{
 				assert(operands.size() == 2);
-				//add only right-hand parsed operand as read
-				auto t = parse_operand(operands[1]);
-				read.insert(t.begin(), t.end());
-				//also if there were brackets involved, they were also read, add them
+
+				auto t = parse_operand(operands[1], true);
+				add_to_first(t, read, written);
+				//first parse brackets as read
 				t = parse_brackets(operands[0]);
-				read.insert(t.begin(), t.end());
+				add_to_first(t, read, written);
+				//here we first set them as read, then as written
+				t = parse_operand(operands[0], false);
+				add_to_first(t, read, written);
+				written.insert(t.begin(), t.end());
+			}
+			else if (contains_as_substring(operations_w, instr.mnemonic))
+			{
+				assert(operands.size() == 1);
+				
+				auto t = parse_brackets(operands[0]);
+				add_to_first(t, read, written);
+
+				t = parse_operand(operands[0], false);
+				written.insert(t.begin(), t.end());
+			}
+			else if (contains_as_substring(operations_wa, instr.mnemonic))
+			{
+				assert(operands.size() == 1);
+				//similar to just w
+				auto t = parse_brackets(operands[0]);
+				add_to_first(t, read, written);
+
+				t = parse_operand(operands[0], false);
+				written.insert(t.begin(), t.end());
+				//but also add ax as read and written
+				add_to_first(X86_REG_AX, read, written);
+				written.insert(X86_REG_AX);
+			}
+			else if (contains_as_substring(operations_wc, instr.mnemonic))
+			{
+				assert(operands.size() == 1);
+				//same as wa, but with cx
+				auto t = parse_brackets(operands[0]);
+				add_to_first(t, read, written);
+
+				t = parse_operand(operands[0], false);
+				written.insert(t.begin(), t.end());
+				//but also add ax cs read and written
+				add_to_first(X86_REG_CX, read, written);
+				written.insert(X86_REG_CX);
+			}
+			else
+			{
+				//no need to do anything, we don't know what this is
 			}
 		}
 	}
-	return read;
+	return make_pair(read, written);
 }
 
 CCTypes nikitailDeterminer(OneStepDisasm d)
 {
-	auto read = registers_used(d);
+	auto t = registers_used(d);
+	auto read = t.first;
+	auto written = t.second;
 
 //	if (DEBUG)
 //	{
 		cout <<"registers read: ";
 		for (auto i : read)
+			cout <<i <<' ';
+		cout <<endl;
+		cout <<"registers written: ";
+		for (auto i : written)
 			cout <<i <<' ';
 		cout <<endl;
 //	}
