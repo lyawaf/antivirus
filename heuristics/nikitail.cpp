@@ -17,6 +17,7 @@ using std::getline;
 
 
 
+//constexpr bool DEBUG = false;
 constexpr bool DEBUG = true;
 
 
@@ -121,7 +122,7 @@ bool contains_as_substring(const set<string>& s, const string& elem)
 
 //as it's better to operate with register types and not strings,
 //we use this function to convert
-inline x86_reg strtoreg(string reg)
+inline x86_reg strtoreg(const string& reg)
 {
 	     if (contains(ax, reg))
 		return X86_REG_AX;
@@ -147,7 +148,7 @@ inline x86_reg strtoreg(string reg)
 		return X86_REG_INVALID;	
 }
 //and back
-string regtostr(x86_reg reg)
+string regtostr(const x86_reg& reg)
 {
 	switch (reg)
 	{
@@ -217,11 +218,11 @@ set<x86_reg> parse_brackets(const string& operand)
 			//add register to result unless it was invalid
 			auto reg = strtoreg(creg);
 			if (DEBUG)
-				cout << "found in []: " <<creg <<endl;
+				cout << "found in []: " << creg << endl;
 			if (reg != X86_REG_INVALID)
 				result.insert(reg);
 			else if (DEBUG)
-				cout <<"it was invalid? " <<creg <<endl;
+				cout << "it was invalid? " << creg << endl;
 
 			//reset current register
 			creg = "";
@@ -279,7 +280,7 @@ inline void add_to_first(const set<T>& inp, set<S>& f, const set<S>& s)
 
 //a function that given a disassembler will determine the registers used until the ret command or end of disassembly
 //first set is registers read, second is registers written
-pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
+pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm& d)
 {
 	set<x86_reg> read {};
 	set<x86_reg> written {};
@@ -297,7 +298,7 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 
 		if (DEBUG)
 		{
-			cout << "0x" <<hex << instr.address <<"\t\t" <<instr.mnemonic <<"\t" <<instr.operands <<endl;
+			cout << "0x" << hex << instr.address << "\t\t" << instr.mnemonic << "\t" << instr.operands << endl;
 		}
 
 		//for now i choose to ignore jump && call instructions
@@ -309,11 +310,11 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				cout << "found a jump command: ";
 				if (dest.empty())
 				{
-					cout << "offset " << instr.operands <<endl;
+					cout << "offset " << instr.operands << endl;
 				}
 				else
 				{
-					cout << "expression " << instr.operands <<endl;
+					cout << "expression " << instr.operands << endl;
 				}
 			}
 		}
@@ -325,11 +326,11 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				cout << "found a call command: ";
 				if (dest.empty())
 				{
-					cout << "offset " << instr.operands <<endl;
+					cout << "offset " << instr.operands << endl;
 				}
 				else
 				{
-					cout << "expression " << instr.operands <<endl;
+					cout << "expression " << instr.operands << endl;
 				}
 			}
 		}
@@ -554,18 +555,46 @@ CCTypes nikitailDeterminer(OneStepDisasm d)
 	auto read = t.first;
 	auto written = t.second;
 
-//	if (DEBUG)
-//	{
-		cout <<"registers read: ";
+	if (DEBUG)
+	{
+		cout << "registers read: ";
 		for (auto i : read)
-			cout <<regtostr(i) <<' ';
-		cout <<endl;
-		cout <<"registers written: ";
+			cout << regtostr(i) << ' ';
+		if (read.empty())
+			cout << "none";
+		cout << endl;
+		cout << "registers written: ";
 		for (auto i : written)
-			cout <<regtostr(i) <<' ';
-		cout <<endl;
-//	}
+			cout << regtostr(i) << ' ';
+		if (written.empty())
+			cout << "none";
+		cout << endl;
 
+		cout << "ended with:\n";
+		auto instr = d.current();
+		cout << "0x" << hex << instr.address << "\t\t" << instr.mnemonic << "\t" << instr.operands << endl;
+	}
+
+//	if (d.get_mode() == 64)
+//		throw std::runtime_error("64bit mode not implemented");
+
+	set<x86_reg> fastcall_regs {X86_REG_AX, X86_REG_DX, X86_REG_CX, X86_REG_R8, X86_REG_R9, X86_REG_DI, X86_REG_SI};
+
+	for (auto i : fastcall_regs)
+	{
+		if (contains(read, i))
+		{
+			return msfastcall;
+		}
+	}
+	if (d.current().operands.empty())
+	{
+		return cdecl;
+	}
+	else
+	{
+		return stdcall;
+	}
 
 	return none;
 }
