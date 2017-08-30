@@ -17,7 +17,7 @@ using std::getline;
 
 
 
-constexpr bool DEBUG = false;
+constexpr bool DEBUG = true;
 
 
 //a function that splits the string
@@ -92,7 +92,7 @@ set<string> bp {
 	"rbp", "ebp", "bp"
 };
 set<string> sp {
-	"rbp", "esp", "sp"
+	"rsp", "esp", "sp"
 };
 set<string> r8 {
 	"r8"
@@ -119,7 +119,7 @@ bool contains_as_substring(const set<string>& s, const string& elem)
 }
 
 
-//as it's better to operate with register types && not strings,
+//as it's better to operate with register types and not strings,
 //we use this function to convert
 inline x86_reg strtoreg(string reg)
 {
@@ -145,6 +145,45 @@ inline x86_reg strtoreg(string reg)
 		return X86_REG_R8;
 	else
 		return X86_REG_INVALID;	
+}
+//and back
+string regtostr(x86_reg reg)
+{
+	switch (reg)
+	{
+		case X86_REG_AX:
+			return "AX";
+			break;
+		case X86_REG_BX:
+			return "BX";
+			break;
+		case X86_REG_CX:
+			return "CX";
+			break;
+		case X86_REG_DX:
+			return "DX";
+			break;
+		case X86_REG_SI:
+			return "SI";
+			break;
+		case X86_REG_DI:
+			return "DI";
+			break;
+		case X86_REG_BP:
+			return "BP";
+			break;
+		case X86_REG_SP:
+			return "SP";
+			break;
+		case X86_REG_R9:
+			return "R9";
+			break;
+		case X86_REG_R8:
+			return "R8";
+			break;
+		default:
+			return "undefined";
+	}
 }
 
 
@@ -298,12 +337,13 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 		{
 			if (DEBUG)
 			{
-				cout << "found a return command\n";
+				cout << "found a return command with argument: ";
+				if (instr.operands.empty())
+					cout << "none\n";
+				else
+					cout << stoi(instr.operands, nullptr, 16) << endl;
 			}
-			if (!DEBUG)
-			{
-				return make_pair(read, written);
-			}
+			return make_pair(read, written);
 		}
 		else
 		{
@@ -314,12 +354,39 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				assert(operands.size() == 2);
 				//a recurring pattern: check firest operand for all read
 				auto t = parse_operand(operands[1], true);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 				//remember that brackets were read
 				t = parse_brackets(operands[0]);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 				//and second for read and written
 				t = parse_operand(operands[0], false);
+				if (DEBUG)
+				{
+					cout << "written: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				written.insert(t.begin(), t.end());
 			}
 			else if (contains_as_substring(operations_rr, instr.mnemonic))
@@ -329,6 +396,15 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				for (auto op : operands)
 				{
 					auto t = parse_operand(op, true);
+					if (DEBUG)
+					{
+						cout << "read: ";
+						for (auto reg : t)
+							cout << regtostr(reg) << ' ';
+						if (t.empty())
+							cout << "none";
+						cout << endl;
+					}
 					add_to_first(t, read, written);
 				}
 			}
@@ -337,12 +413,39 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				assert(operands.size() == 2);
 
 				auto t = parse_operand(operands[1], true);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 				//first parse brackets as read
 				t = parse_brackets(operands[0]);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 				//here we first set them as read, then as written
 				t = parse_operand(operands[0], false);
+				if (DEBUG)
+				{
+					cout << "read/written: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 				written.insert(t.begin(), t.end());
 			}
@@ -351,9 +454,27 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				assert(operands.size() == 1);
 				
 				auto t = parse_brackets(operands[0]);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 
 				t = parse_operand(operands[0], false);
+				if (DEBUG)
+				{
+					cout << "written: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				written.insert(t.begin(), t.end());
 			}
 			else if (contains_as_substring(operations_wa, instr.mnemonic))
@@ -361,9 +482,27 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				assert(operands.size() == 1);
 				//similar to just w
 				auto t = parse_brackets(operands[0]);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 
 				t = parse_operand(operands[0], false);
+				if (DEBUG)
+				{
+					cout << "written: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				written.insert(t.begin(), t.end());
 				//but also add ax as read and written
 				add_to_first(X86_REG_AX, read, written);
@@ -374,9 +513,27 @@ pair< set<x86_reg>, set<x86_reg> > registers_used(OneStepDisasm d)
 				assert(operands.size() == 1);
 				//same as wa, but with cx
 				auto t = parse_brackets(operands[0]);
+				if (DEBUG)
+				{
+					cout << "read: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				add_to_first(t, read, written);
 
 				t = parse_operand(operands[0], false);
+				if (DEBUG)
+				{
+					cout << "written: ";
+					for (auto reg : t)
+						cout << regtostr(reg) << ' ';
+					if (t.empty())
+						cout << "none";
+					cout << endl;
+				}
 				written.insert(t.begin(), t.end());
 				//but also add ax cs read and written
 				add_to_first(X86_REG_CX, read, written);
@@ -401,11 +558,11 @@ CCTypes nikitailDeterminer(OneStepDisasm d)
 //	{
 		cout <<"registers read: ";
 		for (auto i : read)
-			cout <<i <<' ';
+			cout <<regtostr(i) <<' ';
 		cout <<endl;
 		cout <<"registers written: ";
 		for (auto i : written)
-			cout <<i <<' ';
+			cout <<regtostr(i) <<' ';
 		cout <<endl;
 //	}
 
