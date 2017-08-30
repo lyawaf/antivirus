@@ -11,9 +11,6 @@ using namespace std;
 
 #include <capstone/capstone.h>
 
-//deleter used for arrays of text
-auto uint8Deleter = [](uint8_t* pointer) -> void { delete[] pointer; };
-
 class OneStepDisasm
 {
 private:
@@ -65,9 +62,11 @@ public:
 
 	//a function that disassembles and returns the next instruction
 	instruction next();
+	//return previously disassembled instruction
+	instruction current() const;
 
 	//a simple getter
-	int get_mode();
+	int get_mode() const;
 
 	//a function that clones on given virtual address
 	OneStepDisasm clone_at(const uint64_t &addr);

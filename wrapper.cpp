@@ -7,14 +7,12 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint
 , _codefile(filename, ios::in|ios::binary|ios::ate) //opening the file in binary mode
 , _startaddr(startaddr)
 , _v_addr(v_addr)
+, _mode(mode)
 {
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
 
 
-	_mode = mode;
-
-	
 	//opening disassembler
 	if (mode == 32)
 		cs_open(CS_ARCH_X86, CS_MODE_32, &_handle);
@@ -36,7 +34,7 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint
 
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays
-	_code_begin.reset( new uint8_t[_codesize], uint8Deleter );
+	_code_begin.reset( new uint8_t[_codesize], std::default_delete<uint8_t[]>() );
 
 	_code_current = _code_begin.get();
 
@@ -55,14 +53,12 @@ OneStepDisasm::OneStepDisasm(const OneStepDisasm& r)
 : _filename(r._filename)
 , _codefile(r._filename, ios::in|ios::binary|ios::ate)
 , _code_begin(r._code_begin)
+, _mode(r._mode)
 {
 	if (!_codefile.is_open())
 		throw runtime_error("Can't open file");
 
 
-	_mode = r._mode;
-	
-	
 	//god damn C in big projects
 	if (_mode == 32)
 		cs_open(CS_ARCH_X86, CS_MODE_32, &_handle);
@@ -155,12 +151,17 @@ OneStepDisasm::instruction OneStepDisasm::next()
 	return t;
 }
 
+OneStepDisasm::instruction OneStepDisasm::current() const
+{
+	return OneStepDisasm::instruction (_insn->id, _insn->address, _insn->mnemonic, _insn->op_str, _insn->detail);
+}
+
 OneStepDisasm OneStepDisasm::clone_at(const uint64_t &addr)
 {
 	if (addr >= _v_addr)
 	{
 		//3 argument: must to check overflow, fix it later
-		OneStepDisasm child(_filename, _mode, _startaddr + (addr - _v_addr), addr);
+		OneStepDisasm child (_filename, _mode, _startaddr + (addr - _v_addr), addr);
 		return child;
 	}
 	else
@@ -171,7 +172,7 @@ OneStepDisasm OneStepDisasm::clone_at(const uint64_t &addr)
 	}
 }
 
-int OneStepDisasm::get_mode()
+int OneStepDisasm::get_mode() const
 {
 	return _mode;
 }
