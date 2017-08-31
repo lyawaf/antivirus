@@ -8,7 +8,7 @@
 #include <capstone/capstone.h>
 
 #include "wrapper.h"
-#include "heuristics/functions.h"
+#include "functions.h"
 
 
 using namespace std;

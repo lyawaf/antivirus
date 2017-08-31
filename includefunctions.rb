@@ -9,6 +9,7 @@ ArrayKeyword = "//@@ARRAY\n"
 EndKeyword = "//@@END\n"
 SizeKeyword = "//@@SIZE\n"
 IgnoreFiles = ["functions.h", "includefunctions"]
+SearchDir = "./heuristics/"
 
 def yank_fnname text
 	lines = text.each_line.to_a
@@ -48,22 +49,26 @@ if __FILE__ == $0
 	filenames = []
 	fnnames = []
 
-	Dir.foreach "./" do |filename|
+	Dir.foreach SearchDir do |filename|
 		next if filename == "." or filename == ".." 
 		next if filename.split('').last(4).join == ".cpp" #so skip if it's a .cpp file
 		next if filename[0] == "." #skip if a hidden file: those usually aren't needed
 		next if filename.split('').last(2).join == ".o"   #precompiled fiels also aren't our thing
 		next if IgnoreFiles.include? filename #ignore other predetermined files, especially this script and functions.h
 		
+		full_name = SearchDir + filename
+		unless File.file? full_name
+			abort "FATAL: could not open file " + full_name
+		end
 
-		File.open filename, "r" do |file|
+		File.open full_name, "r" do |file|
 			begin
 				text = file.read
 				name = yank_fnname text
-				filenames += [filename]
+				filenames += [full_name]
 				fnnames += [name]
 			rescue => e
-				STDERR.puts "An error occured when parsing file '%s': %s" % [filename, e.message]
+				STDERR.puts "An error occured when parsing file '%s': %s" % [full_name, e.message]
 			end
 		end
 	end

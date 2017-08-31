@@ -1,5 +1,8 @@
-#include "../wrapper.h"
-#include "../cctypes.h"
+#ifndef FUNCTIONS_INCLUDED
+#define FUNCTIONS_INCLUDED
+
+#include "wrapper.h"
+#include "cctypes.h"
 //This file includes all heuristics functions,
 //embraces them all into an array && provides a way
 //to execute them to get the answer
@@ -16,3 +19,5 @@ extern const size_t heuristicFunctionsSize;
 
 
 CCTypes determine(OneStepDisasm disasmer);
+
+#endif

@@ -7,7 +7,7 @@
 //They are included automatically with ./includefunctions script
 
 //@@INCLUSIONS
-#include "heuristics/nikitail.h"
+#include "./heuristics/nikitail.h"
 //@@END
 
 
