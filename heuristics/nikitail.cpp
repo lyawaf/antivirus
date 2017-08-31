@@ -17,8 +17,8 @@ using std::getline;
 
 
 
-//constexpr bool DEBUG = false;
-constexpr bool DEBUG = true;
+constexpr bool DEBUG = false;
+//constexpr bool DEBUG = true;
 
 
 //a function that splits the string

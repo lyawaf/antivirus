@@ -1,6 +1,10 @@
 #include "wrapper.h"
 using namespace std;
 
+//const bool DEBUG = true;
+const bool DEBUG = false;
+
+
 //TODO: better exceptions
 OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint64_t v_addr)
 : _filename(filename)
@@ -31,6 +35,11 @@ OneStepDisasm::OneStepDisasm(string filename, int mode, uint64_t startaddr, uint
 
 	
 	_codesize = static_cast<uint64_t>( _codefile.tellg() ) - startaddr; //a number of bytes from begin to end + 1 is exactly this diffrnce
+
+	if (DEBUG)
+	{
+		cout << "allocating " << _codefile.tellg() << " - " << startaddr << " = " << _codesize << endl;
+	}
 
 
 	//making a smart pointer point to the new memory location, with custom deleter for arrays

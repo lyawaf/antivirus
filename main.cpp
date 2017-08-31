@@ -27,9 +27,9 @@ int main(int argc, char** argv)
 	{
 		try
 		{
-			auto addr   = stoll(i, nullptr, 16);
+			auto addr   = stoull(i, nullptr, 16);
 			auto v_addr = addr + 0x400000; //a wild guess
-			OneStepDisasm d {name, 64, addr, v_addr};
+			OneStepDisasm d {name, 32, addr, v_addr};
 
 			auto type = determine(d);
 
@@ -52,9 +52,13 @@ int main(int argc, char** argv)
 		{
 			cerr << "Could not convert \"" << i << "\"to address: " << e.what() << endl;
 		}
+		catch (const bad_alloc& e)
+		{
+			cerr << "Could not allocate space for file " << name << endl;
+		}
 		catch (const runtime_error& e)
 		{
-			cerr << "Exception caught when parsing argument \"" << i "\": " << e.what() <<endl;
+			cerr << "Exception caught when parsing argument \"" << i << "\": " << e.what() <<endl;
 		}
 	}
 }
