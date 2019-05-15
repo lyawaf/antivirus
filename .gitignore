@@ -1,9 +1,11 @@
 #doubt someone needs tags file
-.tags
-.*.swp
-*.o
-*.bin
+**/*.tags
+**/.*.swp
+**/*.o
+**/*.bin
+**/*.a
 main
-heuristics/.tags
-heuristics/.*.swp
-heuristics/*.o
+CCPTool/CMakeFiles
+CCPTool/cmake_install.cmake
+CCPTool/Makefile
+CCPTool/CMakeCache.txt
