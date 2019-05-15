@@ -7,3 +7,8 @@ main
 heuristics/.tags
 heuristics/.*.swp
 heuristics/*.o
+*.a
+CCPTool/CMakeFiles/*
+CCPTool/cmake_install.cmake
+CCPTool/Makefile
+CCPTool/CMakeCache.txt
