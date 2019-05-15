@@ -5,7 +5,7 @@
 **/*.bin
 **/*.a
 main
-CCPTool/CMakeFiles/*
+CCPTool/CMakeFiles
 CCPTool/cmake_install.cmake
 CCPTool/Makefile
 CCPTool/CMakeCache.txt
