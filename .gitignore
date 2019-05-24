@@ -7,3 +7,4 @@ main
 heuristics/.tags
 heuristics/.*.swp
 heuristics/*.o
+*.qmlc
