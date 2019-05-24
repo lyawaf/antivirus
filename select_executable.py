@@ -1,9 +1,7 @@
 import binwalk
-import re
 # save directory /_filename.extracted with all elf, mach-o, pe extracted files to /dirpath
 
 def select_executable(filepath, dirpath):
-#req = re.compile(r'\b(ELF)|(Mach-O)|(PE)\b', flags=re.IGNORECASE)
     try:
         binwalk.scan(filepath, quiet=True,
                                signature=True,
@@ -14,6 +12,4 @@ def select_executable(filepath, dirpath):
 
     except binwalk.ModuleException as e:
         print("Critical failure:", e)
-
-select_executable("hello/new2.jpg","hello")
 
