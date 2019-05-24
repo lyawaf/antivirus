@@ -1,14 +1,16 @@
 import binwalk
-# save directory /_filename.extracted with all elf, mach-o, pe extracted files to /dirpath
+# dig for elf, mach-o, pe extracted files and if exists save it to /dirpath/_filename.extracted/
 
 def select_executable(filepath, dirpath):
     try:
-        binwalk.scan(filepath, quiet=True,
+        binwalk.scan('-D', 'elf::',
+                     '-D', 'microsoft executable:exe:',
+                     '-D', 'mach-o:o:',
+                     filepath, quiet=True,
                                signature=True,
                                extract=True,
                                matryoshka=True,
-                               directory=dirpath,
-                               dd='[(,\b{0,1}](elf)|(mach-o)|(pe)[\b,)]')
+                               directory=dirpath)
 
     except binwalk.ModuleException as e:
         print("Critical failure:", e)
