@@ -27,7 +27,7 @@ ApplicationWindow {
         }
 
         initialItem: NewScan {
-            anchors.centerIn: parent
+            anchors.fill: parent
 
             onChangePage: {
                 stackView.replacePage(component)
