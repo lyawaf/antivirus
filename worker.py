@@ -25,7 +25,7 @@ class Worker(QThread):
         self._full_log = ""
 
     #Q_PROPERTY
-    @pyqtProperty('QString')
+    @pyqtProperty('QString', notify=logChanged)
     def fullLog(self):
         return self._full_log
 
