@@ -4,6 +4,8 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 
 ColumnLayout {
+    id: page
+    property real masterSize: 1
     signal changePage(var component, var properties)
 
     Label {
@@ -46,9 +48,16 @@ ColumnLayout {
         }
     }
 
-    Button {
-        Layout.fillWidth: false
-        Layout.alignment: Qt.AlignRight
-        text: qsTr("Delete selected")
+    RowLayout {
+        Label {
+            Layout.alignment: Qt.AlignLeft
+            Layout.fillWidth: true
+            text: "Actions:"
+        }
+        Button {
+            Layout.fillWidth: false
+            Layout.alignment: Qt.AlignRight
+            text: qsTr("Delete selected")
+        }
     }
 }

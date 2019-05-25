@@ -6,6 +6,7 @@ import QtQuick.Dialogs 1.2
 
 Item {
     id: page
+    property real masterSize: 1
     signal changePage(var component, var properties)
 
     // no implicit sizes are set, please only use this anchored to a window or frame
@@ -34,10 +35,6 @@ Item {
         width: page.width / 3
 
         text: qsTr("Last check: %1").arg(qsTr("never"))
-
-        Component.onCompleted: {
-            console.log("choose label width: " + chooseLabel.width)
-        }
     }
 
     RowLayout {
@@ -47,15 +44,13 @@ Item {
         anchors.bottom: page.bottom
         anchors.left: page.left
         anchors.right: page.right
-        anchors.leftMargin: checkStatus.font.pixelSize * 0.5
-        anchors.rightMargin: checkStatus.font.pixelSize * 0.5
 
         Label {
             id: chooseLabel
             Layout.alignment: Qt.AlignLeft
             Layout.fillWidth: true
             text: qsTr("Choose new files to scan")
-            font.pixelSize: checkStatus.font.pixelSize * 1.5
+            font.pixelSize: masterSize * 1.5
         }
 
         Button {
@@ -63,7 +58,7 @@ Item {
 
             Layout.alignment: Qt.AlignRight
             text: qsTr("Select folder")
-            font.pixelSize: checkStatus.font.pixelSize * 1.5
+            font.pixelSize: masterSize * 1.5
 
             onClicked: {
                 fileDialog.selectMultiple = false
@@ -75,7 +70,7 @@ Item {
         Button {
             Layout.alignment: Qt.AlignRight
             text: qsTr("Select files")
-            font.pixelSize: checkStatus.font.pixelSize * 1.5
+            font.pixelSize: masterSize * 1.5
 
             onClicked: {
                 fileDialog.selectMultiple = true
@@ -91,7 +86,7 @@ Item {
 
         onAccepted: {
             console.log("Chose: " + fileUrls)
-            page.changePage(Qt.resolvedUrl("Threats.qml"), {})
+            page.changePage(Qt.resolvedUrl("Threats.qml"), {"masterSize": masterSize})
         }
     }
 }
