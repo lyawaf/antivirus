@@ -51,7 +51,7 @@ ColumnLayout {
 	}
 
 	ProgressBar {
-        id: progressbar
+        id: progressBar
 
 		Layout.alignment: Qt.AlignBottom
 		Layout.fillWidth: true
