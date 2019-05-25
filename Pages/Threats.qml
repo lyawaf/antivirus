@@ -8,11 +8,15 @@ ColumnLayout {
     property real masterSize: 1
     signal changePage(var component, var properties)
 
+    // no implicit sizes are set, please only use this anchored to a window or frame
+
     Label {
-        Layout.alignment: Qt.AlignHCenter
+        id: threatLabel
+        Layout.alignment: Qt.AlignLeft
+        font.pixelSize: masterSize * 1.5
         text: listModel.count > 0
-              ? qsTr("%1 threats detected").arg(listModel.count)
-              : qsTr("Your computer is clean")
+        ? qsTr("%1 threats detected").arg(listModel.count)
+        : qsTr("Your computer is clean")
     }
 
     ScrollView {
@@ -20,12 +24,17 @@ ColumnLayout {
         Layout.fillHeight: true
 
         ListView {
+            id: threatView
             delegate: RowLayout {
+                readonly property CheckBox checkBox: itemCheckBox
+
                 CheckBox {
-                    checkState: Qt.Unchecked
+                    id: itemCheckBox
+                    checkState: Qt.Checked
                 }
                 Label {
                     text: modelData
+                    font.pixelSize: masterSize * 1.5
                 }
             }
 
@@ -52,12 +61,14 @@ ColumnLayout {
         Label {
             Layout.alignment: Qt.AlignLeft
             Layout.fillWidth: true
-            text: "Actions:"
+            text: qsTr("Actions:")
+            font.pixelSize: masterSize * 1.5
         }
         Button {
             Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
             text: qsTr("Delete selected")
+            font.pixelSize: masterSize * 1.5
         }
     }
 }
