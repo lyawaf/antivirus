@@ -45,6 +45,8 @@ class ScanWorker(ProgressWorker):
         return QQmlListProperty(ThreatModel, self, self._result)
 
     def run(self):
+        threats_found = []
+
         for file_url in self.files:
             name = file_url.toString()
             self.log_line("Checking {}".format(name))
@@ -54,4 +56,13 @@ class ScanWorker(ProgressWorker):
                 self.log_line("Trying additional heuristics")
                 sleep(3)
 
+            if choice([True, False]):
+                basename = name.split("/")[-1]
+                #found a threat in file
+                threat = ThreatModel(basename, name, "yoba"
+                                    ,"Be careful, that's some advanced magics")
+                threats_found += [threat]
+
             self.advance()
+        self.log_line("Found {} threats".format(len(threats_found)))
+        self.setResult(threats_found)
