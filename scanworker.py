@@ -1,7 +1,8 @@
 # Description: a dummy worker that will "scan" the files given for viruses
 # and give the answer randomly (whats the difference hahahhaaaa)
 
-from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QQmlListProperty, QUrl
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QUrl
+from PyQt5.QtQml import QQmlListProperty
 from time import sleep
 from random import choice
 
@@ -24,14 +25,8 @@ class ScanWorker(ProgressWorker):
         self._files = []
         self._result = []
 
-    #Q_PROPERTY
-    @pyqtProperty(QQmlListProperty, fset=setFiles, notify=filesChanged)
-    def files(self):
-        return QQmlListProperty(QUrl, self, self._files)
-    @pyqtProperty(QQmlListProperty, notify=resultChanged)
-    def result(self):
-        return QQmlListProperty(ThreatModel, self, self._result)
 
+    #property setters
     def setFiles(files):
         self._files = files
         self.filesChanged.emit(self.files)
@@ -39,6 +34,14 @@ class ScanWorker(ProgressWorker):
         self._result = result
         self.resultChanged.emit(self.result)
 
+
+    #Q_PROPERTY
+    @pyqtProperty(QQmlListProperty, fset=setFiles, notify=filesChanged)
+    def files(self):
+        return QQmlListProperty(QUrl, self, self._files)
+    @pyqtProperty(QQmlListProperty, notify=resultChanged)
+    def result(self):
+        return QQmlListProperty(ThreatModel, self, self._result)
 
     def run(self):
         for i in range(30):
