@@ -26,7 +26,7 @@ ColumnLayout {
         ListView {
             id: threatView
             delegate: RowLayout {
-                readonly property CheckBox checkBox: itemCheckBox
+                property bool checked: itemCheckBox.checkState === Qt.Checked
 
                 CheckBox {
                     id: itemCheckBox
