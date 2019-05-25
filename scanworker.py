@@ -17,7 +17,7 @@ class ScanWorker(ProgressWorker):
     """
 
     #Q_SIGNALS
-    filesChanged = pyqtSignal(QQmlListProperty)
+    filesChanged = pyqtSignal('QList<QUrl>')
     resultChanged = pyqtSignal(QQmlListProperty)
 
     def __init__(self, parent=None):
@@ -27,18 +27,18 @@ class ScanWorker(ProgressWorker):
 
 
     #property setters
-    def setFiles(files):
+    def setFiles(self, files):
         self._files = files
         self.filesChanged.emit(self.files)
-    def setResult(result):
+    def setResult(self, result):
         self._result = result
         self.resultChanged.emit(self.result)
 
 
     #Q_PROPERTY
-    @pyqtProperty(QQmlListProperty, fset=setFiles, notify=filesChanged)
+    @pyqtProperty('QList<QUrl>', fset=setFiles, notify=filesChanged)
     def files(self):
-        return QQmlListProperty(QUrl, self, self._files)
+        return self._files
     @pyqtProperty(QQmlListProperty, notify=resultChanged)
     def result(self):
         return QQmlListProperty(ThreatModel, self, self._result)
