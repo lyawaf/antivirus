@@ -26,8 +26,6 @@ ColumnLayout {
         ListView {
             id: threatView
             delegate: RowLayout {
-                readonly property CheckBox checkBox: itemCheckBox
-
                 CheckBox {
                     id: itemCheckBox
                     checkState: Qt.Checked
@@ -65,8 +63,8 @@ ColumnLayout {
             font.pixelSize: masterSize * 1.5
         }
         Button {
-            Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
+            Layout.fillWidth: false
             text: qsTr("Delete selected")
             font.pixelSize: masterSize * 1.5
         }
