@@ -4,7 +4,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.2
 
 ColumnLayout {
-    signal changePage(var component)
+    signal changePage(var component, var properties)
 
     Label {
         Layout.alignment: Qt.AlignHCenter

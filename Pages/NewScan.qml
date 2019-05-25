@@ -6,7 +6,7 @@ import QtQuick.Dialogs 1.2
 
 Item {
     id: page
-    signal changePage(var component)
+    signal changePage(var component, var properties)
 
     // no implicit sizes are set, please only use this anchored to a window or frame
 
@@ -70,7 +70,7 @@ Item {
 
         onAccepted: {
             console.log("Chose: " + fileUrls)
-            page.changePage(Qt.resolvedUrl("Threats.qml"))
+            page.changePage(Qt.resolvedUrl("Threats.qml"), {})
         }
     }
 }

@@ -14,11 +14,11 @@ ApplicationWindow {
         id: stackView
         anchors.fill: parent
 
-        function replacePage(component) {
+        function replacePage(component, properties) {
             // just in case; currentItem gets deleted in most cases anyway
             currentItem.changePage.disconnect(stackView.replacePage)
 
-            var newItem = stackView.replace(component/*, StackView.ReplaceTransition*/)
+            var newItem = stackView.replace(component, properties, StackView.ReplaceTransition)
             if (newItem == null) {
                 console.log("Couldn't create a page")
             } else {
@@ -30,7 +30,7 @@ ApplicationWindow {
             anchors.fill: parent
 
             onChangePage: {
-                stackView.replacePage(component)
+                stackView.replacePage(component, properties)
             }
         }
     }
