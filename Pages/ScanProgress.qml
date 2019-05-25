@@ -13,5 +13,15 @@ AbstractProgress {
 
     ScanWorker {
         id: worker
+
+        Component.onCompleted: {
+            worker.logUpdated.connect(function(text) {logText += text})
+            worker.start()
+            logText += "Started\n"
+        }
+
+        onFinished: {
+            logText += "Finished\n"
+        }
     }
 }
