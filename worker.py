@@ -49,9 +49,9 @@ class ProgressWorker(Worker):
     #Q_SIGNALS
     progressChanged = pyqtSignal(int)
 
-    def __init__(self, end=1, progress_current=0, parent=None):
+    def __init__(self, end=1, start=0, parent=None):
         super().__init__(parent)
-        self._progress = progress_current
+        self._progress = start
         self._progress_end = end
 
 
