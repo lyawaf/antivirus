@@ -21,7 +21,7 @@ class ScanWorker(ProgressWorker):
     resultChanged = pyqtSignal(QQmlListProperty)
 
     def __init__(self, parent=None):
-        super().__init__(end=29, start=0, parent=parent)
+        super().__init__(end=15, start=0, parent=parent)
         self._files = []
         self._result = []
 
@@ -30,6 +30,7 @@ class ScanWorker(ProgressWorker):
     def setFiles(self, files):
         self._files = files
         self.filesChanged.emit(self.files)
+        self.set_end(len(self._files))
     def setResult(self, result):
         self._result = result
         self.resultChanged.emit(self.result)
@@ -44,7 +45,13 @@ class ScanWorker(ProgressWorker):
         return QQmlListProperty(ThreatModel, self, self._result)
 
     def run(self):
-        for i in range(30):
+        for file_url in self.files:
+            name = file_url.toString()
+            self.log_line("Checking {}".format(name))
             sleep(0.5)
-            self.log_line("slept for {}".format(i*2 + 2))
+
+            if choice([True, False]):
+                self.log_line("Trying additional heuristics")
+                sleep(3)
+
             self.advance()
