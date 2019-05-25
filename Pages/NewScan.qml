@@ -10,11 +10,27 @@ Item {
 
     // no implicit sizes are set, please only use this anchored to a window or frame
 
+    Item {
+        anchors {
+            top: parent.top
+            bottom: checkStatus.top
+            left: parent.left
+            right: parent.right
+        }
+
+        Image {
+            anchors.centerIn: parent
+            source: "../Assets/Logo.png"
+        }
+    }
+
     Label {
         id: checkStatus
+        // this label is positioned just above the select row
+        // it shows when the last scan was and tells to scan again
+
         anchors.bottom: selectRow.top
-        anchors.right: folderButton.right
-        anchors.leftMargin: chooseLabel.width
+        anchors.left: selectRow.left
         width: page.width / 3
 
         text: qsTr("Last check: %1").arg(qsTr("never"))
@@ -26,17 +42,20 @@ Item {
 
     RowLayout {
         id: selectRow
+        // a row with buttons to start a new scan on files
+
         anchors.bottom: page.bottom
-        anchors.leftMargin: chooseLabel.font.pixelSize
-        anchors.rightMargin: chooseLabel.font.pixelSize
-        width: page.width
+        anchors.left: page.left
+        anchors.right: page.right
+        anchors.leftMargin: checkStatus.font.pixelSize * 0.5
+        anchors.rightMargin: checkStatus.font.pixelSize * 0.5
 
         Label {
             id: chooseLabel
             Layout.alignment: Qt.AlignLeft
             Layout.fillWidth: true
             text: qsTr("Choose new files to scan")
-            font.pixelSize: folderButton.font.pixelSize * 1.5
+            font.pixelSize: checkStatus.font.pixelSize * 1.5
         }
 
         Button {
@@ -44,6 +63,7 @@ Item {
 
             Layout.alignment: Qt.AlignRight
             text: qsTr("Select folder")
+            font.pixelSize: checkStatus.font.pixelSize * 1.5
 
             onClicked: {
                 fileDialog.selectMultiple = false
@@ -55,6 +75,7 @@ Item {
         Button {
             Layout.alignment: Qt.AlignRight
             text: qsTr("Select files")
+            font.pixelSize: checkStatus.font.pixelSize * 1.5
 
             onClicked: {
                 fileDialog.selectMultiple = true
