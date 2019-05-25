@@ -15,7 +15,7 @@ class ThreatModel(QObject):
     """
 
     def __init__(self, name, filepath, threat_type, description, parent=None):
-        super.__init__(parent=None)
+        super().__init__(parent=None)
         self._name        = name
         self._filepath    = filepath
         self._threat_type = threat_type
