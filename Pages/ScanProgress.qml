@@ -11,6 +11,10 @@ AbstractProgress {
     headerText: qsTr("Scanning files...")
     logText: ""
 
+    progressFrom: 0
+    progressTo: worker.progressEnd
+    progressValue: worker.progress
+
     ScanWorker {
         id: worker
 
