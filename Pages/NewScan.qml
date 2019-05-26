@@ -6,7 +6,7 @@ import QtQuick.Dialogs 1.2
 
 Item {
     id: page
-    property real masterSize: 1
+    property real masterSize: undefined
     signal changePage(var component, var properties)
 
     // no implicit sizes are set, please only use this anchored to a window or frame
