@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.2
 
 ColumnLayout {
     id: page
-    property real masterSize: 1
+    property real masterSize: undefined
     signal changePage(var component, var properties)
 
     // no implicit sizes are set, please only use this anchored to a window or frame
@@ -15,8 +15,8 @@ ColumnLayout {
         Layout.alignment: Qt.AlignLeft
         font.pixelSize: masterSize * 1.5
         text: listModel.count > 0
-        ? qsTr("%1 threats detected").arg(listModel.count)
-        : qsTr("Your computer is clean")
+              ? qsTr("%1 threats detected").arg(listModel.count)
+              : qsTr("Your computer is clean")
     }
 
     ScrollView {
@@ -26,8 +26,6 @@ ColumnLayout {
         ListView {
             id: threatView
             delegate: RowLayout {
-                property bool checked: itemCheckBox.checkState === Qt.Checked
-
                 CheckBox {
                     id: itemCheckBox
                     checkState: Qt.Checked
@@ -65,8 +63,8 @@ ColumnLayout {
             font.pixelSize: masterSize * 1.5
         }
         Button {
-            Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
+            Layout.fillWidth: false
             text: qsTr("Delete selected")
             font.pixelSize: masterSize * 1.5
         }

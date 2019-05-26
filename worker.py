@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Description: classes to start a job in a non-ui thread, and provide updates about progress
 
 from PyQt5.QtCore import QThread, pyqtProperty, pyqtSignal, pyqtSlot
