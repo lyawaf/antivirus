@@ -15,8 +15,8 @@ ColumnLayout {
         Layout.alignment: Qt.AlignLeft
         font.pixelSize: masterSize * 1.5
         text: listModel.count > 0
-        ? qsTr("%1 threats detected").arg(listModel.count)
-        : qsTr("Your computer is clean")
+              ? qsTr("%1 threats detected").arg(listModel.count)
+              : qsTr("Your computer is clean")
     }
 
     ScrollView {
