@@ -29,6 +29,7 @@ ColumnLayout {
                 policy: ScrollBar.AsNeeded
             }
 
+            // force the scroll to be at the bottom when new log comes
             contentHeight: logLabel.height
             contentY: Math.max(contentHeight - height, 0)
 
