@@ -1,7 +1,7 @@
 import binwalk
 # dig for elf, mach-o, pe extracted files and if exists save it to /dirpath/_filename.extracted/
 
-def select_executable(filepath, dirpath):
+def extract(filepath, dirpath):
     try:
         binwalk.scan('-D', 'elf::',
                      '-D', 'microsoft executable:exe:',
