@@ -5,9 +5,6 @@
 **/*.bin
 **/*.a
 main
-heuristics/.tags
-heuristics/.*.swp
-heuristics/*.o
 *.qmlc
 CCPTool/CMakeFiles
 CCPTool/cmake_install.cmake
