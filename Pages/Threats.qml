@@ -23,25 +23,25 @@ ColumnLayout {
               : qsTr("Your computer is clean")
     }
 
-    ScrollView {
+    ListView {
+        id: threatView
         width: parent.width
         Layout.fillHeight: true
 
-        ListView {
-            id: threatView
-            width: parent.width
-            Layout.fillHeight: true
-            delegate: ThreatDelegate {
-                // a "feature" i encountered long ago: listview and scrollview
-                // don't expose correct width, so to size their children you
-                // should use a visual parent of listview, in this case it's
-                // page itself
-                width: page.width
+        ScrollBar.vertical: ScrollBar {
+            policy: ScrollBar.AsNeeded
+        }
 
-                masterSize: page.masterSize
-                nameText: modelData.name
-                detailsText: modelData.description
-            }
+        delegate: ThreatDelegate {
+            // a "feature" i encountered long ago: listview and scrollview
+            // don't expose correct width, so to size their children you
+            // should use a visual parent of listview, in this case it's
+            // page itself
+            width: page.width
+
+            masterSize: page.masterSize
+            nameText: modelData.name
+            detailsText: modelData.description
         }
     }
 
