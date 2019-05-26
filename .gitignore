@@ -10,3 +10,4 @@ CCPTool/CMakeFiles
 CCPTool/cmake_install.cmake
 CCPTool/Makefile
 CCPTool/CMakeCache.txt
+__pycache__/
