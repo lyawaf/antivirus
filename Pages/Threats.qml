@@ -58,5 +58,17 @@ ColumnLayout {
             text: qsTr("Delete selected")
             font.pixelSize: masterSize * 1.5
         }
+        Button {
+            Layout.alignment: Qt.AlignRight
+            Layout.fillWidth: false
+            text: qsTr("Ignore")
+            font.pixelSize: masterSize * 1.5
+
+            onClicked: {
+                var component = Qt.resolvedUrl("NewScan.qml")
+                var properties = {"masterSize": page.masterSize}
+                changePage(component, properties)
+            }
+        }
     }
 }
