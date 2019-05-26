@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Description: a dummy worker that will "scan" the files given for viruses
 # and give the answer randomly (whats the difference hahahhaaaa)
 

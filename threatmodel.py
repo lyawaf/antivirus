@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Description: class that represents a threat (a virus) for ui. It should have
 # the information about virus and methods to execute upon it
 
