@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Description: class that represents a threat (a virus) for ui. It should have
-# the information about virus and methods to execute upon it
+# the information about virus and maybe methods to execute upon it
 
 from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 
@@ -9,6 +9,10 @@ from PyQt5.QtCore import QObject, pyqtProperty, pyqtSignal, pyqtSlot
 class ThreatModel(QObject):
     """
     Description: A class with virus info
+    Usage: As QML can't work with python objects directly, we shall wrap them
+           into qml-accessable classes like this one. Whenever the scan info
+           arrives and you want to present it to user, create an instance of
+           this class.
     Fields:
         name: short name of file
         filepath: full path to virus
