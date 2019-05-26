@@ -32,7 +32,6 @@ Item {
 
         anchors.bottom: selectRow.top
         anchors.left: selectRow.left
-        width: page.width / 3
 
         text: qsTr("Last check: %1").arg(qsTr("never"))
     }
