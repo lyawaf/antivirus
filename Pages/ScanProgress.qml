@@ -26,6 +26,13 @@ AbstractProgress {
 
         onFinished: {
             logText += "Finished\n"
+
+			var component = Qt.resolvedUrl("Threats.qml")
+			var properties = {
+				"masterSize": page.masterSize
+				,"threats": worker.result
+			}
+			changePage(component, properties)
         }
     }
 }
