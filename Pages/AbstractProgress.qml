@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.2
 
 ColumnLayout {
     id: page
-    property real masterSize: 1
+    property real masterSize: undefined
     property alias headerText: header.text
     property alias logText: logLabel.text
     property alias progressFrom: progressBar.from
@@ -29,6 +29,7 @@ ColumnLayout {
                 policy: ScrollBar.AsNeeded
             }
 
+            // force the scroll to be at the bottom when new log comes
             contentHeight: logLabel.height
             contentY: Math.max(contentHeight - height, 0)
 
