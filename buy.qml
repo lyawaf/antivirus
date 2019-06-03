@@ -37,7 +37,7 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Consider buying this product to unlock a full set of features")
             background: Rectangle {
-                color: white
+                color: "#ffffff"
             }
         }
     }
