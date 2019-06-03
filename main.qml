@@ -48,4 +48,8 @@ ApplicationWindow {
             }
         }
     }
+
+    Notifier {
+        componentUrl: Qt.resolvedUrl("buy.qml")
+    }
 }
