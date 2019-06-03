@@ -85,7 +85,13 @@ Item {
 
         onAccepted: {
             console.log("Chose: " + fileUrls)
-            page.changePage(Qt.resolvedUrl("Threats.qml"), {"masterSize": masterSize})
+
+            var component = Qt.resolvedUrl("ScanProgress.qml")
+            var params = {
+                "masterSize": masterSize
+                ,"files": fileUrls
+            }
+            page.changePage(component, params)
         }
     }
 }
