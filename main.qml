@@ -49,7 +49,7 @@ ApplicationWindow {
         }
     }
 
-    Notifier {
+    WindowCreator {
         componentUrl: Qt.resolvedUrl("buy.qml")
     }
 }
