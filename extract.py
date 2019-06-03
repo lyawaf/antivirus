@@ -1,5 +1,7 @@
-import binwalk
+#!/usr/bin/env python3
 # dig for elf, mach-o, pe extracted files and if exists save it to /dirpath/_filename.extracted/
+
+import binwalk
 
 def extract(filepath, dirpath):
     binwalk.scan('-D', 'elf::',
