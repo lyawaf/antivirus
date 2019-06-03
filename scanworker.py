@@ -23,7 +23,7 @@ class ScanWorker(ProgressWorker):
     resultChanged = pyqtSignal(QQmlListProperty)
 
     def __init__(self, parent=None):
-        super().__init__(end=15, start=0, parent=parent)
+        super().__init__(start=0, parent=parent)
         self._files = []
         self._result = []
 
