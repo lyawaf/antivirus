@@ -49,6 +49,7 @@ class ProgressWorker(Worker):
 
     #Q_SIGNALS
     progressChanged = pyqtSignal(int)
+    progressEndChanged = pyqtSignal(int)
 
     def __init__(self, end=1, start=0, parent=None):
         super().__init__(parent)
@@ -61,7 +62,7 @@ class ProgressWorker(Worker):
     def progress(self):
         return self._progress
 
-    @pyqtProperty(int, constant=True)
+    @pyqtProperty(int, notify=progressEndChanged)
     def progressEnd(self):
         return self._progress_end
 
@@ -69,6 +70,9 @@ class ProgressWorker(Worker):
     def set_progress(self, val):
         self._progress = val
         self.progressChanged.emit(self._progress)
+    def set_end(self, val):
+        self._progress_end = val
+        self.progressEndChanged.emit(self._progress_end)
 
     # increase progress by 1
     def advance(self):
