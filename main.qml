@@ -48,4 +48,8 @@ ApplicationWindow {
             }
         }
     }
+
+    WindowCreator {
+        componentUrl: Qt.resolvedUrl("buy.qml")
+    }
 }
