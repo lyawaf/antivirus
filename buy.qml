@@ -40,6 +40,11 @@ ApplicationWindow {
         Label {
             Layout.alignment: Qt.AlignHCenter
             text: qsTr("Consider buying this product to unlock a full set of features")
+
+            Layout.fillWidth: true
+            font.pixelSize: masterValues.font.pixelSize * 2
+            wrapMode: Text.WordWrap
+
             background: Rectangle {
                 color: "#ffffff"
             }

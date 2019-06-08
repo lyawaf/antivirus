@@ -20,6 +20,7 @@ Column {
             id: nameLabel
             Layout.fillWidth: true
             font.pixelSize: masterSize * 1.5
+            elide: Text.ElideRight
         }
         Button {
             Layout.alignment: Qt.AlignRight
@@ -45,6 +46,7 @@ Column {
         Label {
             id: detailsLabel
             width: parent.width
+            wrapMode: Text.Wrap
         }
     }
 }

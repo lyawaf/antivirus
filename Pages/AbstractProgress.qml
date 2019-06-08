@@ -39,6 +39,7 @@ ColumnLayout {
                 width: parent.width
                 font.family: "Monospace"
                 font.pixelSize: masterSize * 1.5
+                wrapMode: Text.WrapAnywhere
 
                 text: ""
             }
