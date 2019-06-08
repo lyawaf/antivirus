@@ -28,8 +28,12 @@ ApplicationWindow {
             Image {
                 id: image
                 anchors.centerIn: parent
-                // FIXME placeholder image! Yulya narisuy kartinku
-                source: "./Assets/Logo.png"
+
+                width: Math.min(parent.width, implicitWidth)
+                height: Math.min(parent.height, implicitHeight, width)
+                fillMode: Image.PreserveAspectFit
+
+                source: "./Assets/Excl.png"
             }
         }
 
