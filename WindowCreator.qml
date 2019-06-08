@@ -12,12 +12,17 @@ Item {
     property url componentUrl: undefined
 
     function createObject() {
+        // this code is taken from official documentation, and yes it is boring
+        // and verbose
+
         var instance;
 
         var component = Qt.createComponent(componentUrl);
+        // call finishCreation only on ready component
         if (component.status == Component.Ready) {
             finishCreation();
         } else {
+            // this happens when component is eg on a remote server or slow disk
             component.statusChanged.connect(finishCreation);
         }
 
@@ -34,11 +39,12 @@ Item {
             }
         }
 
+        // upon closing a window create a new object
         instance.closing.connect(notifier.createObject)
     }
 
     Component.onCompleted: {
-        if (componentUrl !== undefined){
+        if (componentUrl !== undefined) {
             createObject();
         }
     }
