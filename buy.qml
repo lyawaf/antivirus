@@ -7,7 +7,7 @@ ApplicationWindow {
     id: window
     visible: true
     width: 640
-    height: 480
+    height: 640
     title: qsTr("Licensing notification")
 
     Label {

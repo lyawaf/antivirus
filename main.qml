@@ -6,8 +6,8 @@ import "./Pages/"
 
 ApplicationWindow {
     visible: true
-    width: 640
-    height: 480
+    width: 1024
+    height: 768
     title: qsTr("Antivirus")
 
     Label {
