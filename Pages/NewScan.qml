@@ -21,7 +21,12 @@ Item {
 
         Image {
             anchors.centerIn: parent
-            source: "../Assets/Logo.png"
+
+            width: Math.min(parent.width, implicitWidth)
+            height: Math.min(parent.height, implicitHeight)
+            fillMode: Image.PreserveAspectFit
+
+            source: "../Assets/Logo_v2_small.png"
         }
     }
 
