@@ -1,11 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import subprocess
 import re
 from subprocess import Popen, PIPE
 
 def start(filename):
     p = Popen(['objdump', '-x', filename], stdout=PIPE, stderr=PIPE)
-    output, err = p.communicate(b"input data that is passed to subprocess' stdin")
+    output, err = p.communicate()
     
     lines = output.decode('utf8').split('\n')
     
@@ -33,24 +33,22 @@ def start(filename):
             abs = i # abs - номер секции *ABS* в SYMBOL TABLE, отсюда начинаем разбирать функции:
         i = i + 1
 
-    functions = []
-    f_adress = []
+    funcnames = []
+    funcadress = []
 
     for i in range(abs, n-3):
         if lines[i].find(name) != -1:
             words = lines[i].split(' ')
-            trash = []
             for word in words:
-                trash.append(word)
-                if word.find(".") != -1:
-                    word = re.sub(r"\d+", "", word, flags=re.UNICODE)
-            functions.append(trash.pop())
-            f_adress.append(int(words[0],16)-int(adress,16))
+                lastworld = word
+            funcnames.append(lastworld)
+            funcadress.append(int(words[0],16)-int(adress,16))
 
-    print (f_adress, functions)
+    print (funcadress, funcnames)
 
 if __name__ == "__main__":
-    filename="nlbig"
-    start(filename)
-
+    if len(sys.argv) < 2:
+        print("Usage: {} file".format(sys.argv[0]))
+        sys.exit(1)
+    start(sys.argv[1])
 
