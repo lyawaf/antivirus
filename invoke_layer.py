@@ -2,6 +2,15 @@
 import subprocess
 from invoke_exceptions import *
 
+def parse(output):
+    result = output.split("\n")
+
+    for strings in result:
+        if strings.find("virus") != -1:
+            print ("!!! VIRUS !!!")
+            return
+    print("NOT VIRUS")
+
 def invoke(filename, function_addresses):
     input_addresses = [str(address) for address in function_addresses]
 
@@ -21,4 +30,6 @@ def invoke(filename, function_addresses):
         raise BadData(errors)
         return
 
-    return (output, errors)
+    parse(output)
+
+    return (output)
