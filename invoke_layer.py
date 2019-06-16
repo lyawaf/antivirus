@@ -20,7 +20,7 @@ def invoke(filename, function_addresses):
         process = subprocess.run(command + input_addresses, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as exc:
         NoMainException(exc)
-        print (exc)
+        print(exc)
         return
 
     output = process.stdout.decode()
@@ -28,7 +28,6 @@ def invoke(filename, function_addresses):
 
     if errors != '':
         raise BadData(errors)
-        return
 
     parse(output)
 
