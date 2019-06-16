@@ -85,17 +85,15 @@ int main(int argc, char** __argv)
 			switch (type)
 			{
 				case cdecl:
-					cout << "Function at " << *iter << ": cdecl" << endl;
-					break;
 				case stdcall:
-					cout << "Function at " << *iter << ": stdcall" << endl;
-					break;
 				case msfastcall:
-					cout << "Function at " << *iter << ": msfastcall" << endl;
+					cout << "safe";
 					break;
 				default:
-					cout <<"whatever, idc\n";
+					cout <<"virus";
+					break;
 			}
+			cout << " signature at function " << *iter << endl
 		}
 		catch (const invalid_argument& e)
 		{
