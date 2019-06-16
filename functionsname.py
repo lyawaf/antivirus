@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import subprocess
+import re
 from subprocess import Popen, PIPE
 
 class NameAdress(object):
@@ -20,38 +21,99 @@ class Funtcions(object):
 def start():
     p = Popen(['objdump', '-x', 'nlbig'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
     output, err = p.communicate(b"input data that is passed to subprocess' stdin")
-    rc = p.returncode
     
     lines = output.split('\n')
     n = 0
     for line in lines:
+        #print line
         n = n + 1
-    
-    words = lines[15].split(' ')
-    text = NameAdress(words[3],  words[14])
-    text.show()
+    #print n
 
-    words = lines[17].split(' ')
-    data = NameAdress(words[3],  words[14])
-    data.show()
-
-    massiv = []
-    i=29
-    while i < n:
-        words = lines[i].split(' ')
-        func = Funtcions()
-        if words[8][0:5] == text.name[0:5]:
-            func.adress = int(words[0],16)-int(text.adress,16)
-        elif words[8][0:5] == data.name[0:5]:
-            func.adress = int(words[0],16)-int(data.adress,16)
-        else:
+    a = "Sections:"
+    i = 0
+    for line in lines:
+        if a in line:
+            sect = i # sect - номер секции Sections:
             break
-        func.name = words[9]
-        massiv.append(func)
-        i = i+1
+        i = i + 1
+    #print sect
 
-    for i in range(len(massiv)):
-            massiv[i].show()
+    i=0
+    b = "SYMBOL TABLE:"
+    for line in lines:
+        if b in line:
+            symb = i # symb - номер секции SYMBOL TABLE:
+        i = i + 1
+    #print symb
+
+    name = []
+    adress = []
+
+    for i in range(sect + 2, symb, 2):#symb
+        #print lines[i]
+        words = lines[i].split(' ')
+
+
+        j=0
+        index = []
+        for word in words:
+            if word.strip():
+                #print j, " ", word, "nostrip"
+                index.append(j)
+            j = j+1
+        #print index
+
+        index.reverse()
+        index.pop()
+        a=index.pop()
+        #print a
+        name.append(words[a])
+
+        index.pop()
+        b=index.pop()
+        #print b
+        adress.append(words[b])
+    #print name, adress, "\n"
+
+    neednumber=0
+    i=0
+    c = "*ABS*"
+    for line in lines:
+        if c in line:
+            abs = i # abs - номер секции SYMBOL TABLE:
+        i = i + 1
+    #print abs
+
+    functions = []
+    f_adress = []
+#print abs, n
+    for i in range(abs, n-3):#n-3
+        #print lines[i]
+        if lines[i].find("*ABS*") != -1:
+            #print "fuck ABS"
+            continue
+        if lines[i].find("*UND*") != -1:
+            #print "fuck UND"
+            continue
+        words = lines[i].split(' ')
+        trash = []
+        for word in words:
+            trash.append(word)
+            if word.find(".") != -1:
+                word = re.sub(r"\d+", "", word, flags=re.UNICODE)
+                k = 0
+                for names in name:
+                    if names == word:
+                        neednumber = k
+                    #print k
+                    k = k+1
+        functions.append(trash.pop())
+        trash.reverse()
+        a=trash.pop()
+        a=int(a,16)-int(adress[neednumber],16)
+        f_adress.append(a)
+
+    print f_adress, functions
 
 start()
 
