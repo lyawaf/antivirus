@@ -23,7 +23,9 @@ Column {
             elide: Text.ElideRight
         }
         Button {
-            Layout.alignment: Qt.AlignRight
+            id: button
+
+            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.preferredWidth: height
 
             text: frame.currentText
@@ -31,6 +33,23 @@ Column {
 
             onClicked: {
                 frame.collapsed = !frame.collapsed
+            }
+
+            background: Item {
+                // here i'm creating an item to center the rectangle in it
+                width: button.width
+                height: button.height
+                Rectangle {
+                    anchors.centerIn: parent
+                    color: button.down ? "#b0b0b0" : "#ffffff"
+                    border.color: "#b0b0b0"
+
+                    height: button.height * 0.8
+                    width: height
+
+                    border.width: 0.5
+                    radius: height / 4
+                }
             }
         }
     }
