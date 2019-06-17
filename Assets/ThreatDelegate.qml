@@ -25,11 +25,11 @@ Column {
         Button {
             id: button
 
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.alignment: Qt.AlignRight
             Layout.preferredWidth: height
 
-            text: frame.currentText
-            font.pixelSize: masterSize * 1.5
+            text: "lalal"
+            font.pixelSize: masterSize * 0.5
 
             onClicked: {
                 frame.collapsed = !frame.collapsed
@@ -37,11 +37,14 @@ Column {
 
             background: Item {
                 // here i'm creating an item to center the rectangle in it
+                // otherwise as i set the rectangle's dimensions to be smaller
+                // than those of the button, it would be dangling in the top
+                // left corner
                 width: button.width
                 height: button.height
                 Rectangle {
                     anchors.centerIn: parent
-                    color: button.down ? "#b0b0b0" : "#ffffff"
+                    color: frame.collapsed ? "#ffffff" : "#b0b0b0"
                     border.color: "#b0b0b0"
 
                     height: button.height * 0.8
