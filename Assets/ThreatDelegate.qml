@@ -27,8 +27,6 @@ Column {
 
             Layout.alignment: Qt.AlignRight
             Layout.preferredWidth: height
-
-            text: "lalal"
             font.pixelSize: masterSize * 0.5
 
             onClicked: {
@@ -62,6 +60,8 @@ Column {
         width: parent.width
         collapsed: true
 
+        // for some reason the text is invisible on the button. But let's leave
+        // it here and see if we get lucky
         showText: "+"
         collapseText: "-"
 
