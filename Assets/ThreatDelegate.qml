@@ -27,6 +27,8 @@ Column {
 
             Layout.alignment: Qt.AlignRight
             Layout.preferredWidth: height
+
+            text: frame.currentText
             font.pixelSize: masterSize * 0.5
 
             onClicked: {
