@@ -16,11 +16,7 @@ def start(filename):
     
     lines = output.decode('utf8').split('\n')
 
-    try:
-        section_index = lines.index("Sections:")
-    except Exception as exc:
-        raise NoTextSectionError('No .text section')
-        return
+    section_index = lines.index("Sections:")
 
     try:
         symbols_index = lines.index("SYMBOL TABLE:")
@@ -34,6 +30,10 @@ def start(filename):
         words = lines[i].split()
         if words[1] == text_literal:
             text_section_address = words[3]
+            break
+    else:
+        raise NoTextSectionError('No .text section')
+        return
 
     functions = []
 
@@ -46,12 +46,9 @@ def start(filename):
     return (functions)
 
 if __name__ == "__main__":
-    '''
     if len(sys.argv) < 2:
         print("Usage: {} file".format(sys.argv[0]))
         sys.exit(1)
-    start(sys.argv[1])
-    '''
-    functions = start("notext.o")
+    functions = start(sys.argv[1])
     print (functions)
 
