@@ -11,8 +11,7 @@ def start(filename):
         p = Popen(['objdump', '-x', filename], stdout=PIPE, stderr=PIPE)
         output, err = p.communicate()
     except Exception as exc:
-        ObjdumpFailure('Objdump is failure')
-        return
+        raise ObjdumpFailure('Objdump is failure')
     
     lines = output.decode('utf8').split('\n')
 
@@ -21,8 +20,7 @@ def start(filename):
     try:
         symbols_index = lines.index("SYMBOL TABLE:")
     except Exception as exc:
-        NoSymbolsSectionError('No SYMBOL TABLE section')
-        return
+        raise NoSymbolsSectionError('No SYMBOL TABLE section')
 
     text_literal = ".text"
 
@@ -33,7 +31,6 @@ def start(filename):
             break
     else:
         raise NoTextSectionError('No .text section')
-        return
 
     functions = []
 
@@ -43,7 +40,7 @@ def start(filename):
             function_address = int(words[0], 16) - int(text_section_address, 16)
             functions.append((words[-1], function_address))
 
-    return (functions)
+    return functions
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
