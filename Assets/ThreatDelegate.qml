@@ -23,14 +23,36 @@ Column {
             elide: Text.ElideRight
         }
         Button {
+            id: button
+
             Layout.alignment: Qt.AlignRight
             Layout.preferredWidth: height
 
             text: frame.currentText
-            font.pixelSize: masterSize * 1.5
+            font.pixelSize: masterSize * 0.5
 
             onClicked: {
                 frame.collapsed = !frame.collapsed
+            }
+
+            background: Item {
+                // here i'm creating an item to center the rectangle in it
+                // otherwise as i set the rectangle's dimensions to be smaller
+                // than those of the button, it would be dangling in the top
+                // left corner
+                width: button.width
+                height: button.height
+                Rectangle {
+                    anchors.centerIn: parent
+                    color: frame.collapsed ? "#ffffff" : "#b0b0b0"
+                    border.color: "#b0b0b0"
+
+                    height: button.height * 0.8
+                    width: height
+
+                    border.width: 0.5
+                    radius: height / 4
+                }
             }
         }
     }
@@ -40,6 +62,8 @@ Column {
         width: parent.width
         collapsed: true
 
+        // for some reason the text is invisible on the button. But let's leave
+        // it here and see if we get lucky
         showText: "+"
         collapseText: "-"
 
