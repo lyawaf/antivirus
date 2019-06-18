@@ -8,19 +8,26 @@ from subprocess import Popen, PIPE
 
 def start(filename):
     try:
-        p = Popen(['objdump', '-x', filename], stdout=PIPE, stderr=PIPE)
-        output, err = p.communicate()
+        process = Popen(['objdump', '-x', filename], stdout=PIPE, stderr=PIPE)
     except Exception as exc:
         raise ObjdumpFailure('Objdump is failure')
+
+    output, err = process.communicate()
+
+    if err != '':
+        raise ObjdumpFailure(err)
     
     lines = output.decode('utf8').split('\n')
 
-    section_index = lines.index("Sections:")
-
+    try:
+        section_index = lines.index("Sections:")
+    except Exception as exc:
+        raise NoSectionError('No Section: section')
+    
     try:
         symbols_index = lines.index("SYMBOL TABLE:")
     except Exception as exc:
-        raise NoSymbolsSectionError('No SYMBOL TABLE section')
+        raise NoSectionError('No SYMBOL TABLE section')
 
     text_literal = ".text"
 
@@ -30,7 +37,7 @@ def start(filename):
             text_section_address = words[3]
             break
     else:
-        raise NoTextSectionError('No .text section')
+        raise NoSectionError('No .text section')
 
     functions = []
 
