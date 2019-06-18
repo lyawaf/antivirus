@@ -7,9 +7,8 @@ def parse(output):
 
     for strings in result:
         if strings.find("virus") != -1:
-            print ("!!! VIRUS !!!")
-            return
-    print("NOT VIRUS")
+            return ("!!! VIRUS !!!")
+    return ("NOT VIRUS")
 
 def invoke(filename, function_addresses):
     input_addresses = [str(address) for address in function_addresses]
@@ -19,9 +18,7 @@ def invoke(filename, function_addresses):
     try:
         process = subprocess.run(command + input_addresses, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     except Exception as exc:
-        NoMainException(exc)
-        print(exc)
-        return
+        raise NoMainException(exc)
 
     output = process.stdout.decode()
     errors = process.stderr.decode()
@@ -29,6 +26,4 @@ def invoke(filename, function_addresses):
     if errors != '':
         raise BadData(errors)
 
-    parse(output)
-
-    return (output)
+    return parse(output)

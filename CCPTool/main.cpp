@@ -93,7 +93,7 @@ int main(int argc, char** __argv)
 					cout <<"virus";
 					break;
 			}
-			cout << " signature at function " << *iter << endl
+			cout << " signature at function " << *iter << endl;
 		}
 		catch (const invalid_argument& e)
 		{
