@@ -24,8 +24,8 @@ def start(filename):
 
     text_literal = ".text"
 
-    for i in range(section_index + 2, symbols_index, 2):
-        words = lines[i].split()
+    for line in lines[section_index + 2 : symbols_index : 2]:
+        words = line.split()
         if words[1] == text_literal:
             text_section_address = words[3]
             break
@@ -34,9 +34,9 @@ def start(filename):
 
     functions = []
 
-    for i in range(symbols_index + 1, len(lines) - 3):
-        if lines[i].find(text_literal) != -1:
-            words = lines[i].split(' ')
+    for line in lines[symbols_index + 1 : -3]:
+        if line.find(text_literal) != -1:
+            words = line.split(' ')
             function_address = int(words[0], 16) - int(text_section_address, 16)
             functions.append((words[-1], function_address))
 
