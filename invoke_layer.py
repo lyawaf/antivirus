@@ -3,12 +3,14 @@ import subprocess
 from invoke_exceptions import *
 
 def parse(output):
+    '''returns True if virus '''
+    
     result = output.split("\n")
 
     for strings in result:
         if strings.find("virus") != -1:
-            return ("!!! VIRUS !!!")
-    return ("NOT VIRUS")
+            return True
+    return False
 
 def invoke(filename, function_addresses):
     input_addresses = [str(address) for address in function_addresses]
