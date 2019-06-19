@@ -13,9 +13,6 @@ def start(filename):
         raise ObjdumpFailure('Objdump is failure')
 
     output, err = process.communicate()
-
-    if err != '':
-        raise ObjdumpFailure(err)
     
     lines = output.decode('utf8').split('\n')
 
