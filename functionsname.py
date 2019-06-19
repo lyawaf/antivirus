@@ -9,10 +9,9 @@ from subprocess import Popen, PIPE
 def start(filename):
     try:
         process = Popen(['objdump', '-x', filename], stdout=PIPE, stderr=PIPE)
+        output, err = process.communicate()
     except Exception as exc:
         raise ObjdumpFailure('Objdump is failure')
-
-    output, err = process.communicate()
     
     lines = output.decode('utf8').split('\n')
 
