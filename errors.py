@@ -11,7 +11,7 @@ class ObjdumpFailure(FunctionsException):
     def __init__(self, message):
         self.message = message
 
-class ObjdumpErrors(FunctionsException):
-    """ objdump errors """
+class NoSectionError(FunctionsException):
+    """ no section error """
     def __init__(self, message):
         self.message = message
