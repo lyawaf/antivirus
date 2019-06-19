@@ -1,31 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import re
 import sys
-import traceback
 from errors import *
 from subprocess import Popen, PIPE
 
-def start(filename):
+def get_functions_addresses(filename):
     try:
         process = Popen(['objdump', '-x', filename], stdout=PIPE, stderr=PIPE)
-        output, err = process.communicate()
     except Exception as exc:
-        raise ObjdumpFailure('Objdump is failure')
+        raise ObjdumpFailure(exc)
+
+    output, err = process.communicate()
     
     lines = output.decode('utf8').split('\n')
 
     try:
-        section_index = lines.index("Sections:")
+        section_index = lines.index('Sections:')
     except Exception as exc:
-        raise NoSectionError('No Section: section')
+        raise NoSectionError('There is not section with adresses')
     
     try:
-        symbols_index = lines.index("SYMBOL TABLE:")
+        symbols_index = lines.index('SYMBOL TABLE:')
     except Exception as exc:
         raise NoSectionError('No SYMBOL TABLE section')
 
-    text_literal = ".text"
+    text_literal = '.text'
 
     for line in lines[section_index + 2 : symbols_index : 2]:
         words = line.split()
@@ -45,10 +44,10 @@ def start(filename):
 
     return functions
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("Usage: {} file".format(sys.argv[0]))
+        print('Usage: {} file'.format(sys.argv[0]))
         sys.exit(1)
-    functions = start(sys.argv[1])
-    print (functions)
+    functions = get_functions_addresses(sys.argv[1])
+    print(functions)
 
