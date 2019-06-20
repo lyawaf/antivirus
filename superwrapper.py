@@ -7,9 +7,10 @@ from os import listdir
 from os.path import isfile, join
 
 def scan_file(filename, log):
-    log('Scanning {}...'.format(filename))
+    log('Scanning {}'.format(filename))
     try:
         functions_addresses = [addrs for (name, addrs) in get_functions_addresses(filename)]
+        log('Found {} functions in file'.format(len(functions_addresses)))
         is_dangerous = invoke(filename, functions_addresses)
         return (filename, is_dangerous)
     except Exception as exc:
@@ -20,7 +21,9 @@ def scan(filepath, dirpath, log):
     extracted_dirpath = dirpath + '/_' + filepath + '.extracted'
     files = listdir(extracted_dirpath)
     binary_files = [join(extracted_dirpath, f) for f in files if isfile(join(extracted_dirpath, f))]
-    return list(map(lambda f: scan_file(f, log), binary_files))
+    log('Found {} embedded files in {}'.format(len(binary_files), filepath))
+
+    return [scan_file(f, log) for f in binary_files]
 
 
 if __name__ == '__main__':
