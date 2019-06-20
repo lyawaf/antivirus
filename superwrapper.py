@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+
+from extract import extract
+from functionsname import get_functions_addresses
+from invoke_layer import invoke
+from os import listdir
+from os.path import isfile, join
+
+def scan_file(filename):
+    functions_addresses = get_functions_addresses(filename)
+    return (filename, invoke(filename, [addrs for (name, addrs) in functions_addresses]))
+
+def scan(filepath, dirpath):
+    extract(filepath, dirpath)
+    files = [join(dirpath, f) for f in listdir(dirpath) if isfile(join(dirpath, f))]
+    return list(map(scan_file, files))
+
+
+if __name__ == '__main__':
+    scan('./CCPTool/tests/elf_32_simple.bin', '.')
