@@ -3,13 +3,14 @@
 # Description: a dummy worker that will "scan" the files given for viruses
 # and give the answer randomly (whats the difference hahahhaaaa)
 
-from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QUrl
+from PyQt5.QtCore import pyqtProperty, pyqtSignal, pyqtSlot, QUrl, QTemporaryDir
 from PyQt5.QtQml import QQmlListProperty
-from time import sleep
-from random import choice
 
 from worker import ProgressWorker
 from threatmodel import ThreatModel
+
+from superwrapper import scan
+
 
 class ScanWorker(ProgressWorker):
     """
@@ -52,19 +53,19 @@ class ScanWorker(ProgressWorker):
         for file_url in self.files:
             name = file_url.toString()
             self.log_line("Checking {}".format(name))
-            sleep(0.5)
+            
+            tdir = QTemporaryDir()
+            if tdir.isValid():
+                path = tdir.path()
+            else:
+                self.log_line("Could not create temporary directory")
+                continue
 
-            if choice([True, False]):
-                self.log_line("Trying additional heuristics")
-                sleep(3)
+            scan_result = scan(file_url, path, self.log_line)
 
-            if choice([True, False]):
-                basename = name.split("/")[-1]
-                #found a threat in file
-                threat = ThreatModel(basename, name, "yoba"
-                                    ,"Be careful, that's some advanced magics")
-                threats_found += [threat]
-
+            threat = ThreatModel(file_url, file_url, "yoba"
+                                ,"Be careful, that's some advanced magics")
+            threats_found += [threat]
             self.advance()
         self.log_line("Found {} threats".format(len(threats_found)))
         self.setResult(threats_found)
