@@ -7,8 +7,12 @@ from os import listdir
 from os.path import isfile, join
 
 def scan_file(filename):
-    functions_addresses = get_functions_addresses(filename)
-    return (filename, invoke(filename, [addrs for (name, addrs) in functions_addresses]))
+    try:
+        functions_addresses = get_functions_addresses(filename)
+        return filename, invoke(filename, [addrs for (name, addrs) in functions_addresses]))
+    except Exception as exc:
+        return (filename, True)
+
 
 def scan(filepath, dirpath):
     extract(filepath, dirpath)
