@@ -62,7 +62,7 @@ class ScanWorker(ProgressWorker):
                 continue
 
             scan_result = scan(str(file_url.toLocalFile()), path, self.log_line)
-            if scan_result[1] == True:
+            if True in (res[1] for res in scan_result):
                 threat = ThreatModel(file_url.toLocalFile(), file_url.toLocalFile(), "yoba"
                                     ,"Be careful, that's some advanced magics")
                 threats_found += [threat]
