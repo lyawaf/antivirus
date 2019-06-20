@@ -4,7 +4,7 @@ from extract import extract
 from functionsname import get_functions_addresses
 from invoke_layer import invoke
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, isdir, basename
 
 def scan_file(filename, log):
     log('Scanning {}'.format(filename))
@@ -18,7 +18,9 @@ def scan_file(filename, log):
 
 def scan(filepath, dirpath, log):
     extract(filepath, dirpath)
-    extracted_dirpath = dirpath + '/_' + filepath + '.extracted'
+    extracted_dirpath = dirpath + '/_' + basename(filepath) + '.extracted'
+    if not isdir(extracted_dirpath):
+        return [(filepath, False)]
     files = listdir(extracted_dirpath)
     binary_files = [join(extracted_dirpath, f) for f in files if isfile(join(extracted_dirpath, f))]
     log('Found {} embedded files in {}'.format(len(binary_files), filepath))
