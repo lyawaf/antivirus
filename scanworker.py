@@ -53,20 +53,20 @@ class ScanWorker(ProgressWorker):
         for file_url in self.files:
             name = file_url.toString()
             self.log_line("Checking {}".format(name))
-            
+
             tdir = QTemporaryDir()
             if tdir.isValid():
                 path = tdir.path()
             else:
                 self.log_line("Could not create temporary directory")
                 continue
-
-            scan_result = scan(str(file_url.toLocalFile()), path, self.log_line)
+            local_file = file_url.toLocalFile()
+            scan_result = scan(str(local_file), path, self.log_line)
             if True in (res[1] for res in scan_result):
-                threat = ThreatModel(file_url.toLocalFile(), file_url.toLocalFile(), "yoba"
+                threat = ThreatModel(local_file, local_file, "yoba"
                                     ,"Be careful, that's some advanced magics")
                 threats_found += [threat]
-                
+
             self.advance()
         self.log_line("Found {} threats".format(len(threats_found)))
         self.setResult(threats_found)
