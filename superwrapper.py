@@ -15,13 +15,12 @@ def scan_file(filename, log):
     except Exception as exc:
         return (filename, True)
 
-
 def scan(filepath, dirpath, log):
     extract(filepath, dirpath)
     extracted_dirpath = dirpath + '/_' + filepath + '.extracted'
-    full_path = join(extracted_dirpath, f)  
-    files = [full_path for f in listdir(extracted_dirpath) if isfile(full_path)]
-    return list(map(scan_file, files))
+    files = listdir(extracted_dirpath)
+    binary_files = [join(extracted_dirpath, f) for f in files if isfile(join(extracted_dirpath, f))]
+    return list(map(scan_file, binary_files))
 
 
 if __name__ == '__main__':
