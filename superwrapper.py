@@ -18,7 +18,7 @@ def scan_file(filename, log):
 
 def scan(filepath, dirpath, log):
     extract(filepath, dirpath)
-    extracted_dirpath = dirpath + '/_' + filepath + '.extracted'
+    extracted_dirpath = dirpath + '/_' + filepath.split('/')[-1] + '.extracted'
     files = listdir(extracted_dirpath)
     binary_files = [join(extracted_dirpath, f) for f in files if isfile(join(extracted_dirpath, f))]
     log('Found {} embedded files in {}'.format(len(binary_files), filepath))
