@@ -18,4 +18,4 @@ def scan(filepath, dirpath):
 
 
 if __name__ == '__main__':
-    scan('./CCPTool/tests/elf_32_simple.bin', '.')
+    scan('elf_32_simple.bin', './CCPTool/tests')
