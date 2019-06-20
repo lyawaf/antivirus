@@ -12,7 +12,8 @@ def scan_file(filename):
 
 def scan(filepath, dirpath):
     extract(filepath, dirpath)
-    files = [join(dirpath, f) for f in listdir(dirpath) if isfile(join(dirpath, f))]
+    extracted_dirpath = filepath + '.extracted'
+    files = [join(extracted_dirpath, f) for f in listdir(extracted_dirpath) if isfile(join(extracted_dirpath, f))]
     return list(map(scan_file, files))
 
 
