@@ -18,7 +18,7 @@ def scan(filepath, dirpath):
     extract(filepath, dirpath)
     extracted_dirpath = dirpath + '/_' + filepath + '.extracted'
     files = [join(extracted_dirpath, f) for f in listdir(extracted_dirpath) if isfile(join(extracted_dirpath, f))]
-    return list(map(lambda f: scan_file(f), files))
+    return list(map(scan_file, files))
 
 
 if __name__ == '__main__':
