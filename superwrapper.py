@@ -9,7 +9,7 @@ from os.path import isfile, join
 def scan_file(filename):
     try:
         functions_addresses = get_functions_addresses(filename)
-        return filename, invoke(filename, [addrs for (name, addrs) in functions_addresses]))
+        return (filename, invoke(filename, [addrs for (name, addrs) in functions_addresses]))
     except Exception as exc:
         return (filename, True)
 
