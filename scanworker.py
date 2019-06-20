@@ -61,7 +61,7 @@ class ScanWorker(ProgressWorker):
                 self.log_line("Could not create temporary directory")
                 continue
 
-            scan_result = scan(file_url, path, self.log_line)
+            scan_result = scan(file_url.toString(), path, self.log_line)
 
             threat = ThreatModel(file_url, file_url, "yoba"
                                 ,"Be careful, that's some advanced magics")
