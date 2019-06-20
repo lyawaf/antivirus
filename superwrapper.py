@@ -20,7 +20,7 @@ def scan(filepath, dirpath, log):
     extracted_dirpath = dirpath + '/_' + filepath + '.extracted'
     files = listdir(extracted_dirpath)
     binary_files = [join(extracted_dirpath, f) for f in files if isfile(join(extracted_dirpath, f))]
-    return list(map(scan_file, binary_files))
+    return list(map(lambda f: scan_file(f, log), binary_files))
 
 
 if __name__ == '__main__':
